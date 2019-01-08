@@ -1,14 +1,17 @@
 from nltk.stem import PorterStemmer
- 
+import json
+import sys
 
-def loadDoc():
-	f = open("firstdata", "r")
+def loadDoc(file):
+	f = open(file, "r")
 	t = f.read().split(".I ")
 	for i in range(0, len(t)) :
 		t[i] = t[i].replace('\n', " ")
-		t[i] = t[i].replace(',', " , ")
-		t[i] = t[i].replace('.', " . ")
+		t[i] = t[i].replace(',', " ")
+		t[i] = t[i].replace('.', " ")
+		t[i] = t[i].replace('"', " ")
 		t[i] = t[i].lower()
+	f.close()
 	return t
 	
 def getFrenquencyVector(doc, motsVides):
@@ -34,14 +37,44 @@ def loadMotsVides(file):
 	return t
 
 
-def main():
-	doc = loadDoc()
-	motsVide = loadMotsVides("motsvides.txt")
-	vect = getFrenquencyVector(doc[1], motsVide)
-	print(vect)
-	print
-	print(getFrenquencyVector(doc[1], []))
-	return 0
+def saveDescripteur(tab):
+	txt = json.dumps(tab)
+	f = open("descripteur.json", "w")
+	f.write(txt)
+	f.close() 
+	
 
+def generateDescripteur(file):
+	doc = loadDoc(file)
+	motsVide = loadMotsVides("motsvides.txt")
+	biblio = []
+	for i in range (1, len(doc)):
+		vect = getFrenquencyVector(doc[i], motsVide)
+		biblio.append(vect)
+	saveDescripteur(biblio)
+	
+	
+def loadDescripteur():
+	f = open("descripteur.json", "r")
+	txt = f.read()
+	tab = json.loads(txt)
+	return tab
+
+
+def main():
+	
+	mode = sys.argv[1]
+	
+	if(mode == "-load"):
+		file = sys.argv[2]
+		generateDescripteur(file)
+	elif(mode == "-search")
+		request = sys.argv[2]
+		##TODO:
+
+	generateDescripteur("firstdata")
+	descripteurs = loadDescripteur()
+	print(descripteurs)
+	return 0
 
 main()
