@@ -49,6 +49,7 @@ def idf(descTable, word):
 	dc=0
 	dc = DC(descTable, word)
 	n = len(descTable)
+	print ("taille = ", n, "\n")
 	return math.log10(n/dc)
 					
 	
@@ -84,13 +85,15 @@ def main():
 	if(mode == "-load"):
 		file = sys.argv[2]
 		generateDescripteur(file)
-	elif(mode == "-search")
+	elif(mode == "-search"):
 		request = sys.argv[2]
 		##TODO:
+		descripteur = loadDescripteur()
+		print(idf(descripteur, "familiar"))
 
-	generateDescripteur("firstdata")
-	descripteurs = loadDescripteur()
-	print(descripteurs)
+	#generateDescripteur("firstdata")
+	#descripteurs = loadDescripteur()
+	#print(descripteurs)
 	return 0
 
 main()
