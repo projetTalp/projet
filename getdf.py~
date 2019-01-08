@@ -1,5 +1,5 @@
-###from nltk.stem.snowball import FrenchStemmer
-
+from nltk.stem import PorterStemmer
+ 
 
 def loadDoc():
 	f = open("firstdata", "r")
@@ -10,12 +10,14 @@ def loadDoc():
 		t[i] = t[i].replace('.', " . ")
 		t[i] = t[i].lower()
 	return t
-
 	
 def getFrenquencyVector(doc, motsVides):
+	
 	doc = doc.split(" ")
 	dico = {}
 	for i in doc:
+		ps = PorterStemmer()
+		i = ps.stem(i)
 		if(i != ''):
 			if(i not in motsVides):
 				if(dico.has_key(i)):
@@ -23,6 +25,14 @@ def getFrenquencyVector(doc, motsVides):
 				else:
 					dico[i] = 1
 	return dico
+
+def loadMotsVides(file):
+	f = open(file, 'r')
+	t = f.readlines()
+	for i in range(0, len(t)) :
+		t[i] = t[i].replace('\n', "")
+	return t
+
 
 def main():
 	doc = loadDoc()
@@ -34,10 +44,4 @@ def main():
 	return 0
 
 
-def loadMotsVides(file):
-	f = open(file, 'r')
-	t = f.readlines()
-	for i in range(0, len(t)) :
-		t[i] = t[i].replace('\n', "")
-	return t
 main()
