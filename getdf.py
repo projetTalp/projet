@@ -1,5 +1,5 @@
 from nltk.stem import PorterStemmer
- 
+import math
 
 def loadDoc():
 	f = open("firstdata", "r")
@@ -33,6 +33,19 @@ def loadMotsVides(file):
 		t[i] = t[i].replace('\n', "")
 	return t
 
+def DC(descTable, word ) :
+	cpt = 0
+	for i in descTable :
+		if ( word in i.keys()) : 
+			 cpt+=1
+	return cpt
+def idf(descTable, word):
+	dc=0
+	dc = DC(descTable, word)
+	n = len(descTable)
+	return math.log10(n/dc)
+					
+	
 
 def main():
 	doc = loadDoc()
