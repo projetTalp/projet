@@ -1,4 +1,4 @@
-from nltk.stem import PorterStemer
+from nltk.stem import PorterStemmer
  
 
 def loadDoc():
@@ -16,7 +16,7 @@ def getFrenquencyVector(doc, motsVides):
 	doc = doc.split(" ")
 	dico = {}
 	for i in doc:
-		ps = PorterStemer()
+		ps = PorterStemmer()
 		i = ps.stem(i)
 		if(i != ''):
 			if(i not in motsVides):
