@@ -3,14 +3,13 @@ import cgi
 form = cgi.FieldStorage()
 print("Content-type: text/html; charset=utf-8\n")
 
-print(form.getvalue("name"))
 
 html = """<!DOCTYPE html>
 <head>
-    <title> Bienvenu dans notre moteur de recherche</title>
+    <title> Bienvenue dans notre moteur de recherche</title>    
 </head>
 <body>
-	<form action="search">
+	<form action="search" method="POST">
   		<input name="q">
   		<input type="submit">
 	</form>
