@@ -21,15 +21,29 @@ def getFrenquencyVector(doc, motsVides):
 	doc = doc.split(" ")
 	dico = {}
 	for i in doc:
-		ps = PorterStemmer()
-		i = ps.stem(i)
+
 		if(i != ''):
 			if(i not in motsVides):
+				ps = PorterStemmer()
+				i = ps.stem(i)
 				if(dico.has_key(i)):
 					dico[i] = dico[i]+1
 				else:
 					dico[i] = 1
 	return dico
+
+def cleanQueryVector(query, motsVides):
+	
+	query = query.split(" ")
+	cleanedQuery = []
+	for i in query:
+		if(i != ''):
+			if(i not in motsVides):
+				ps = PorterStemmer()
+				i = ps.stem(i)
+				cleanedQuery.append(i)
+
+	return cleanedQuery
 
 def loadMotsVides(file):
 	f = open(file, 'r')
@@ -45,11 +59,14 @@ def DC(descTable, word ) :
 			 cpt+=1
 	return cpt
 
-def idf(descTable, word):
-	dc=0
-	dc = DC(descTable, word)
+def idf(descTable, tabWord):
 	n = len(descTable)
-	return math.log10(n/dc)
+	tmp = {}
+	for word in tabWord :
+		dc=0
+		dc = DC(descTable, word)	
+		tmp[word]=math.log10(n/dc)
+	return tmp
 					
 	
 
