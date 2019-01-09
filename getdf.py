@@ -1,4 +1,5 @@
 from nltk.stem import PorterStemmer
+import math
 
 import json
 import sys
@@ -49,7 +50,7 @@ def getTermFrenquency(frequencyVector):
 		sum = sum + frequencyVector[i]
 	for i in frequencyVector:  # Calcul du tf pour chaque doc
 		t =float(frequencyVector[i])/sum
-		frequencyVector[i] = "%.4f" % t  #On garde 4 digit
+		frequencyVector[i] = round(t, 4)
 	return frequencyVector
 
 def loadMotsVides(file):
@@ -101,6 +102,7 @@ def loadDescripteurs():
 	tab = json.loads(txt)
 	return tab
 
+
 def similariteCos(vectDesc, vectReq):
 	prodScal = 0
 	for word in vectReq:
@@ -115,6 +117,14 @@ def findSimilarite(descripteurs, vectRequestIDF):
 		result[i] = similariteCos(vectDesc, vectReq)
 		i += 1
 	return result
+
+def normeVect(dic):
+	norm=0
+	for i in dic:
+		norm = norm + (dic[i])**2
+		norm = math.sqrt(norm)
+	return norm
+
 
 def main():
 	
