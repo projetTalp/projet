@@ -4,6 +4,7 @@ import json
 import sys
 import math
 
+
 def loadDoc(file):
 	f = open(file, "r")
 	t = f.read().split(".I ")
@@ -15,7 +16,7 @@ def loadDoc(file):
 		t[i] = t[i].lower()
 	f.close()
 	return t
-	
+
 def getFrenquencyVector(doc, motsVides):
 	
 	doc = doc.split(" ")
@@ -31,6 +32,15 @@ def getFrenquencyVector(doc, motsVides):
 					dico[i] = 1
 	return dico
 
+def getTermFrenquency(frequencyVector):
+	sum = 0
+	for i in frequencyVector:  # Recuperation du nombre de mots dans le doc
+		sum = sum + frequencyVector[i]
+	for i in frequencyVector:  # Calcul du tf pour chaque doc
+		t =float(frequencyVector[i])/sum
+		frequencyVector[i] = "%.4f" % t  #On garde 4 digit
+	return frequencyVector
+
 def loadMotsVides(file):
 	f = open(file, 'r')
 	t = f.readlines()
@@ -41,8 +51,8 @@ def loadMotsVides(file):
 def DC(descTable, word ) :
 	cpt = 0
 	for i in descTable :
-		if ( word in i.keys()) : 
-			 cpt+=1
+		if ( word in i.keys()) :
+			cpt+=1
 	return cpt
 
 def idf(descTable, word):
@@ -67,6 +77,7 @@ def generateDescripteur(file):
 	biblio = []
 	for i in range (1, len(doc)):
 		vect = getFrenquencyVector(doc[i], motsVide)
+		vect = getTermFrenquency(vect)
 		biblio.append(vect)
 	saveDescripteur(biblio)
 	
@@ -87,6 +98,7 @@ def main():
 		generateDescripteur(file)
 	elif(mode == "-search"):
 		request = sys.argv[2]
+
 		##TODO:
 		descripteur = loadDescripteur()
 		print(idf(descripteur, "familiar"))
