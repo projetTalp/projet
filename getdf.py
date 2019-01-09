@@ -18,11 +18,9 @@ def loadDoc(file):
 	return t
 
 def getFrenquencyVector(doc, motsVides):
-	
 	doc = doc.split(" ")
 	dico = {}
 	for i in doc:
-
 		if(i != ''):
 			if(i not in motsVides):
 				ps = PorterStemmer()
@@ -33,9 +31,8 @@ def getFrenquencyVector(doc, motsVides):
 					dico[i] = 1
 	return dico
 
-<<<<<<< HEAD
-def cleanQueryVector(query, motsVides):
-	
+
+def cleanQueryVector(query, motsVides):	
 	query = query.split(" ")
 	cleanedQuery = []
 	for i in query:
@@ -44,9 +41,8 @@ def cleanQueryVector(query, motsVides):
 				ps = PorterStemmer()
 				i = ps.stem(i)
 				cleanedQuery.append(i)
-
 	return cleanedQuery
-=======
+
 def getTermFrenquency(frequencyVector):
 	sum = 0
 	for i in frequencyVector:  # Recuperation du nombre de mots dans le doc
@@ -55,7 +51,6 @@ def getTermFrenquency(frequencyVector):
 		t =float(frequencyVector[i])/sum
 		frequencyVector[i] = "%.4f" % t  #On garde 4 digit
 	return frequencyVector
->>>>>>> 4ba3e2431357e53bd02924e56f5f46308e6aa08a
 
 def loadMotsVides(file):
 	f = open(file, 'r')
@@ -73,17 +68,13 @@ def DC(descTable, word ) :
 
 def idf(descTable, tabWord):
 	n = len(descTable)
-<<<<<<< HEAD
 	tmp = {}
 	for word in tabWord :
 		dc=0
 		dc = DC(descTable, word)	
 		tmp[word]=math.log10(n/dc)
 	return tmp
-=======
-	print ("taille = ", n, "\n")
-	return math.log10(n/dc)
->>>>>>> 4ba3e2431357e53bd02924e56f5f46308e6aa08a
+
 					
 	
 
