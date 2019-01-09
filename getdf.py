@@ -73,9 +73,12 @@ def DC(descTable, word ):
 def idf(descTable, tabWord):
 	n = len(descTable)
 	tmp = {}
-	for word in tabWord :
-		dc = DC(descTable, word)	
-		tmp[word] = math.log10(n/dc)
+	for word in tabWord:
+		dc = DC(descTable, word)
+		if dc != 0:
+			tmp[word] = math.log10(n/dc)
+		else:
+			tmp[word] = 0
 	return tmp
 
 					
