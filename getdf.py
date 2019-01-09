@@ -75,8 +75,7 @@ def idf(descTable, tabWord):
 		tmp[word]=math.log10(n/dc)
 	return tmp
 
-					
-	
+
 
 def saveDescripteur(tab):
 	txt = json.dumps(tab)
