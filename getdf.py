@@ -4,6 +4,7 @@ import json
 import sys
 import math
 
+
 def loadDoc(file):
 	f = open(file, "r")
 	t = f.read().split(".I ")
@@ -15,7 +16,7 @@ def loadDoc(file):
 		t[i] = t[i].lower()
 	f.close()
 	return t
-	
+
 def getFrenquencyVector(doc, motsVides):
 	
 	doc = doc.split(" ")
@@ -32,6 +33,7 @@ def getFrenquencyVector(doc, motsVides):
 					dico[i] = 1
 	return dico
 
+<<<<<<< HEAD
 def cleanQueryVector(query, motsVides):
 	
 	query = query.split(" ")
@@ -44,6 +46,16 @@ def cleanQueryVector(query, motsVides):
 				cleanedQuery.append(i)
 
 	return cleanedQuery
+=======
+def getTermFrenquency(frequencyVector):
+	sum = 0
+	for i in frequencyVector:  # Recuperation du nombre de mots dans le doc
+		sum = sum + frequencyVector[i]
+	for i in frequencyVector:  # Calcul du tf pour chaque doc
+		t =float(frequencyVector[i])/sum
+		frequencyVector[i] = "%.4f" % t  #On garde 4 digit
+	return frequencyVector
+>>>>>>> 4ba3e2431357e53bd02924e56f5f46308e6aa08a
 
 def loadMotsVides(file):
 	f = open(file, 'r')
@@ -55,18 +67,23 @@ def loadMotsVides(file):
 def DC(descTable, word ) :
 	cpt = 0
 	for i in descTable :
-		if ( word in i.keys()) : 
-			 cpt+=1
+		if ( word in i.keys()) :
+			cpt+=1
 	return cpt
 
 def idf(descTable, tabWord):
 	n = len(descTable)
+<<<<<<< HEAD
 	tmp = {}
 	for word in tabWord :
 		dc=0
 		dc = DC(descTable, word)	
 		tmp[word]=math.log10(n/dc)
 	return tmp
+=======
+	print ("taille = ", n, "\n")
+	return math.log10(n/dc)
+>>>>>>> 4ba3e2431357e53bd02924e56f5f46308e6aa08a
 					
 	
 
@@ -83,6 +100,7 @@ def generateDescripteur(file):
 	biblio = []
 	for i in range (1, len(doc)):
 		vect = getFrenquencyVector(doc[i], motsVide)
+		vect = getTermFrenquency(vect)
 		biblio.append(vect)
 	saveDescripteur(biblio)
 	
@@ -101,13 +119,16 @@ def main():
 	if(mode == "-load"):
 		file = sys.argv[2]
 		generateDescripteur(file)
-	elif(mode == "-search")
+	elif(mode == "-search"):
 		request = sys.argv[2]
-		##TODO:
 
-	generateDescripteur("firstdata")
-	descripteurs = loadDescripteur()
-	print(descripteurs)
+		##TODO:
+		descripteur = loadDescripteur()
+		print(idf(descripteur, "familiar"))
+
+	#generateDescripteur("firstdata")
+	#descripteurs = loadDescripteur()
+	#print(descripteurs)
 	return 0
 
 main()
