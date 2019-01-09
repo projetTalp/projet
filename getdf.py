@@ -1,5 +1,4 @@
 from nltk.stem import PorterStemmer
-import math
 
 import json
 import sys
@@ -18,15 +17,16 @@ def loadDoc(file):
 	f.close()
 	return t
 
+
 def getOccurrenciesVector(doc, motsVides):
 	doc = doc.split(" ")
 	dico = {}
 	for i in doc:
-		if(i != ''):
-			if(i not in motsVides):
+		if i != '':
+			if i not in motsVides:
 				ps = PorterStemmer()
 				i = ps.stem(i)
-				if(dico.has_key(i)):
+				if dico.has_key(i):
 					dico[i] = dico[i]+1
 				else:
 					dico[i] = 1
@@ -37,8 +37,8 @@ def cleanQueryVector(query, motsVides):
 	query = query.split(" ")
 	cleanedQuery = []
 	for i in query:
-		if(i != ''):
-			if(i not in motsVides):
+		if i != '':
+			if i not in motsVides:
 				ps = PorterStemmer()
 				i = ps.stem(i)
 				cleanedQuery.append(i)
@@ -49,31 +49,33 @@ def getTermFrenquency(frequencyVector):
 	for i in frequencyVector:  # Recuperation du nombre de mots dans le doc
 		sum = sum + frequencyVector[i]
 	for i in frequencyVector:  # Calcul du tf pour chaque doc
-		t =float(frequencyVector[i])/sum
+		t = float(frequencyVector[i])/sum
 		frequencyVector[i] = round(t, 4)
 	return frequencyVector
+
 
 def loadMotsVides(file):
 	f = open(file, 'r')
 	t = f.readlines()
-	for i in range(0, len(t)) :
+	for i in range(0, len(t)):
 		t[i] = t[i].replace('\n', "")
 	return t
 
-def DC(descTable, word ) :
+
+def DC(descTable, word ):
 	cpt = 0
 	for i in descTable :
-		if ( word in i.keys()) :
+		if word in i.keys():
 			cpt+=1
 	return cpt
+
 
 def idf(descTable, tabWord):
 	n = len(descTable)
 	tmp = {}
 	for word in tabWord :
-		dc=0
 		dc = DC(descTable, word)	
-		tmp[word]=math.log10(n/dc)
+		tmp[word] = math.log10(n/dc)
 	return tmp
 
 					
@@ -106,20 +108,23 @@ def loadDescripteurs():
 def similariteCos(vectDesc, vectReq):
 	prodScal = 0
 	for word in vectReq:
-		prodScal = prodScal+ vectDesc[word] * vectReq[word]
+		if vectDesc.has_key(word):
+			prodScal = prodScal+ vectDesc[word] * vectReq[word]
 	cos = prodScal / (normeVect(vectDesc) * normeVect(vectReq))
 	return cos
-	
+
+
 def findSimilarite(descripteurs, vectRequestIDF):
 	result = {}
 	i = 1 
 	for vectDesc in descripteurs:
-		result[i] = similariteCos(vectDesc, vectReq)
+		result[i] = similariteCos(vectDesc, vectRequestIDF)
 		i += 1
 	return result
 
+
 def normeVect(dic):
-	norm=0
+	norm = 0
 	for i in dic:
 		norm = norm + (dic[i])**2
 		norm = math.sqrt(norm)
@@ -130,10 +135,12 @@ def main():
 	
 	mode = sys.argv[1]
 	motsVide = loadMotsVides("motsvides.txt")
-	if(mode == "-load"):
+
+	if mode == "-load":
 		file = sys.argv[2]
 		generateDescripteur(file, motsVide)
-	elif(mode == "-search"):
+
+	elif mode == "-search":
 		request = sys.argv[2]
 		vectRequestWord = cleanQueryVector(request, motsVide)
 		descripteurs = loadDescripteurs()
