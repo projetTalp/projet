@@ -17,7 +17,7 @@ def loadDoc(file):
 	f.close()
 	return t
 
-def getFrenquencyVector(doc, motsVides):
+def getOccurrenciesVector(doc, motsVides):
 	doc = doc.split(" ")
 	dico = {}
 	for i in doc:
@@ -90,7 +90,7 @@ def generateDescripteur(file):
 	motsVide = loadMotsVides("motsvides.txt")
 	biblio = []
 	for i in range (1, len(doc)):
-		vect = getFrenquencyVector(doc[i], motsVide)
+		vect = getOccurrenciesVector(doc[i], motsVide)
 		vect = getTermFrenquency(vect)
 		biblio.append(vect)
 	saveDescripteur(biblio)
@@ -116,10 +116,6 @@ def main():
 		##TODO:
 		descripteur = loadDescripteur()
 		print(idf(descripteur, "familiar"))
-
-	#generateDescripteur("firstdata")
-	#descripteurs = loadDescripteur()
-	#print(descripteurs)
 	return 0
 
 main()
