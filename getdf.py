@@ -85,9 +85,8 @@ def saveDescripteur(tab):
 	f.close() 
 	
 
-def generateDescripteur(file):
+def generateDescripteur(file, motsVide):
 	doc = loadDoc(file)
-	motsVide = loadMotsVides("motsvides.txt")
 	biblio = []
 	for i in range (1, len(doc)):
 		vect = getOccurrenciesVector(doc[i], motsVide)
@@ -96,26 +95,41 @@ def generateDescripteur(file):
 	saveDescripteur(biblio)
 	
 	
-def loadDescripteur():
+def loadDescripteurs():
 	f = open("descripteur.json", "r")
 	txt = f.read()
 	tab = json.loads(txt)
 	return tab
 
+def similariteCos(vectDesc, vectReq):
+	prodScal = 0
+	for word in vectReq:
+		prodScal = prodScal+ vectDesc[word] * vectReq[word]
+	cos = prodScal / (normeVect(vectDesc) * normeVect(vectReq))
+	return cos
+	
+def findSimilarite(descripteurs, vectRequestIDF):
+	result = {}
+	i = 1 
+	for vectDesc in descripteurs:
+		result[i] = similariteCos(vectDesc, vectReq)
+		i += 1
+	return result
 
 def main():
 	
 	mode = sys.argv[1]
-	
+	motsVide = loadMotsVides("motsvides.txt")
 	if(mode == "-load"):
 		file = sys.argv[2]
-		generateDescripteur(file)
+		generateDescripteur(file, motsVide)
 	elif(mode == "-search"):
 		request = sys.argv[2]
-
-		##TODO:
-		descripteur = loadDescripteur()
-		print(idf(descripteur, "familiar"))
+		vectRequestWord = cleanQueryVector(request, motsVide)
+		descripteurs = loadDescripteurs()
+		vectRequestIDF = idf(descripteurs, vectRequestWord)
+		result = findSimilarite(descripteurs, vectRequestIDF)
+		print(result)
 	return 0
 
 main()
