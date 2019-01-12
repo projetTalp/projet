@@ -5,6 +5,16 @@ import sys
 import math
 
 
+global motsVide
+
+
+def getDoc(file, id):
+	f = open(file, "r")
+	t = (f.read().split(".I "))[id]
+	f.close()
+	return t
+
+
 def loadDoc(file):
 	f = open(file, "r")
 	t = f.read().split(".I ")
@@ -62,7 +72,7 @@ def loadMotsVides(file):
 	return t
 
 
-def DC(descTable, word ):
+def DC(descTable, word):
 	cpt = 0
 	for i in descTable :
 		if word in i.keys():
@@ -128,7 +138,7 @@ def findSimilarite(descripteurs, vectRequestIDF):
 def normeVect(dic):
 	norm = 0
 	for i in dic:
-		norm = norm + (dic[i])**2
+		norm = norm + (float(dic[i]))**2
 		norm = math.sqrt(norm)
 	return norm
 
@@ -144,11 +154,33 @@ def main():
 
 	elif mode == "-search":
 		request = sys.argv[2]
-		vectRequestWord = cleanQueryVector(request, motsVide)
-		descripteurs = loadDescripteurs()
-		vectRequestIDF = idf(descripteurs, vectRequestWord)
-		result = findSimilarite(descripteurs, vectRequestIDF)
-		print(result)
+		result = search(request)
+		return result
 	return 0
 
-main()
+
+def search(request):
+	vectRequestWord = cleanQueryVector(request, motsVide)
+	descripteurs = loadDescripteurs()
+	vectRequestIDF = idf(descripteurs, vectRequestWord)
+	result = findSimilarite(descripteurs, vectRequestIDF)
+	return result
+
+def sortResult(dicoOfSimilarite):
+	print(dicoOfSimilarite)
+	s=sorted(dicoOfSimilarite, key=dicoOfSimilarite.__getitem__)
+	print(s)
+	return s
+	
+def showResult(sortedDicoOfSimi):
+	html = "<div class='result'><h3>Listes des resultats</h3>"
+	for doc in sortedDicoOfSimi:
+		html += "<div class='item'><a href='./doc/" + str(doc) + "' >Document numero"+str(doc)+"</a><p>Similarite : "+str(sortedDicoOfSimi[doc])+"</p></div>"
+	html += "</div>"
+	return html
+	
+
+
+motsVide = loadMotsVides("motsvides.txt")
+
+
