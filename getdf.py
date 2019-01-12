@@ -16,9 +16,11 @@ def getDoc(file, id):
 
 
 def loadDoc(file):
+	"""Open target file and split it according to the differents ligne .I.
+Then, replace some character with space to avoid problems."""
 	f = open(file, "r")
 	t = f.read().split(".I ")
-	for i in range(0, len(t)) :
+	for i in range(0, len(t)):  # Clean target file
 		t[i] = t[i].replace('\n', " ")
 		t[i] = t[i].replace(',', " ")
 		t[i] = t[i].replace('.', " ")
@@ -29,26 +31,29 @@ def loadDoc(file):
 
 
 def getOccurrenciesVector(doc, motsVides):
+	"""Get the dictionnary which contains articles, then delete 'useless' words listed in the list motsVides
+	to count how much times a word is present on a document"""
 	doc = doc.split(" ")
 	dico = {}
-	for i in doc:
-		if i != '':
-			if i not in motsVides:
-				ps = PorterStemmer()
+	for i in doc:  # Read document
+		if i != '':  # Empty word check
+			if i not in motsVides:  # Useless word check
+				ps = PorterStemmer()  # Stem the word to simplify query in the future
 				i = ps.stem(i)
-				if dico.has_key(i):
+				if dico.has_key(i):  # Count word
 					dico[i] = dico[i]+1
 				else:
 					dico[i] = 1
 	return dico
 
 
-def cleanQueryVector(query, motsVides):	
+def cleanQueryVector(query, motsVides):
+	"""Delete empty word and Stem words on the query"""
 	query = query.split(" ")
-	cleanedQuery = []
+	cleanedQuery = []  # List of correct word
 	for i in query:
 		if i != '':
-			if i not in motsVides:
+			if i not in motsVides:  # Add on the list if not empty word
 				ps = PorterStemmer()
 				i = ps.stem(i)
 				cleanedQuery.append(i)
