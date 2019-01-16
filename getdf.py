@@ -97,30 +97,21 @@ def idf(descTable, tabWord):
 	return tmp
 
 
-
-def saveDescripteur(tab):
+ 
+	
+def save_json(tab, file):
 	txt = json.dumps(tab)
-	f = open("descripteur.json", "w")
+	f = open(file, "w")
 	f.write(txt)
 	f.close() 
 	
 
-def generateDescripteur(file, motsVide):
-	doc = loadDoc(file)
-	biblio = []
-	for i in range (1, len(doc)):
-		vect = getOccurrenciesVector(doc[i], motsVide)
-		vect = getTermFrenquency(vect)
-		biblio.append(vect)
-	saveDescripteur(biblio)
 	
-	
-def loadDescripteurs():
-	f = open("descripteur.json", "r")
+def load_json(file):
+	f = open(file, "r")
 	txt = f.read()
 	tab = json.loads(txt)
 	return tab
-
 
 
 
@@ -134,15 +125,6 @@ def similariteCos(vectDesc, vectReq):
 	return cos
 
 
-"""
-#def findSimilarite(descripteurs, vectRequestIDF):
-#	result = {}
-#	i = 1
-#	for vectDesc in descripteurs:
-#		result[i] = similariteCos(vectDesc, vectRequestIDF)
-#		i += 1
-#	return result
-"""
 def preprocessing(doc, motsVides):
 	doc = doc.split(" ")
 	tab=[]
@@ -189,20 +171,41 @@ def tf_idf(word, doc, list_of_docs):
     return (tf(word, doc) * idf(word, list_of_docs))
 
 
+def generateTF(file, motsVide):
+	doc = loadDoc(file)
+	biblio = []
+	for i in range (1, len(doc)):
+		vect = getOccurrenciesVector(doc[i], motsVide)
+		vect = getTermFrenquency(vect)
+		biblio.append(vect)
+	save_json(biblio, "tf.json")
+	
+def generateIDF(file):
+	tf_doc = load_json("tf.json")
+	idf_tab = []
+	for doc in tf_doc:
+		for word in doc:
+			if idf_tab[word] is None:
+				idf_tab[word] = 1
+			else:
+				idf_tab[word] += 1
+	save_json(idf_tab, "idf.json")
+	return
+
+
 def getTfIdfVector(list_of_docs):
 	"""Get the dictionnary which contains articles, then delete 'useless' words listed in the list motsVides
 	to count how much times a word is present on a document"""
-    tf = load_json()
-    idf = load_json()
-
-    tmp_doc = []
+	tf = load_json("tf.json")
+	idf = load_json("idf.json")
+	tmp_doc = []
 	dico={}
 
 	for i in range(1,len(list_of_docs)+1): # Read document
-        tmp_doc = preprocessing(list_of_docs[i], motsVides)
-        for word in tmp_doc:
-            if dico[i][word] is None:
-			    dico[i][word] = tf[list_of_docs[i]][word] * idf[word]
+		tmp_doc = preprocessing(list_of_docs[i], motsVides)
+		for word in tmp_doc:
+			if dico[i][word] is None:
+				dico[i][word] = tf[list_of_docs[i]][word] * idf[word]
 	return dico
 
 
@@ -223,7 +226,7 @@ def cosine(v1, v2):
     v2 = np.array(v2)
 
     return np.dot(v1, v2) / (np.sqrt(np.sum(v1**2)) * np.sqrt(np.sum(v2**2)))
-
+"""
 # Pour élargir notre BDD
 def load_data():
     df = pd.read_csv(data_path)
@@ -239,10 +242,8 @@ def get_results(self, query, max_rows=10):
 	return results_df
 
 def similarities(self, list_of_words):
-        """Returns a list of all the [docname, similarity_score] pairs relative to a
-list of words.
-        """
-
+        ###Returns a list of all the [docname, similarity_score] pairs relative to a list of words. 
+        
     # building the query dictionary
     query_dict = {}
     for w in list_of_words:
@@ -264,6 +265,7 @@ list of words.
         sims.append([doc[0], score])
 
     return sims
+"""
 
 def findSimilarite(descripteurs, vectRequestIDF):
 	result = {}
@@ -290,7 +292,7 @@ def main():
 
 	if mode == "-load":
 		file = sys.argv[2]
-		generateDescripteur(file, motsVide)
+		generateTF(file, motsVide)
 
 	elif mode == "-search":
 		request = sys.argv[2]
@@ -301,7 +303,7 @@ def main():
 
 def search(request):
 	vectRequestWord = cleanQueryVector(request, motsVide)
-	descripteurs = loadDescripteurs()
+	descripteurs = load_json("descripteur.json")
 	vectRequestIDF = idf(descripteurs, vectRequestWord)
 	result = findSimilarite(descripteurs, vectRequestIDF)
 	return result
