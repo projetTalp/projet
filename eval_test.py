@@ -41,3 +41,6 @@ def main():
 
 main()
 
+# TODO ajout calcul rappel preci vitesse(comparer avec la taille de la base)
+
+# ++ embeding de mots/comment representer un doc autrement + distance entre deux documents

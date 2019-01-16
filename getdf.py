@@ -10,6 +10,7 @@ global motsVide
 
 
 def getDoc(file, id):
+	"""Load a file and split it every time '.I' appear"""
 	f = open(file, "r")
 	t = (f.read().split(".I "))[id]
 	f.close()
@@ -17,8 +18,8 @@ def getDoc(file, id):
 
 
 def loadDoc(file):
-	"""Open target file and split it according to the differents ligne .I.
-Then, replace some character with space to avoid problems."""
+	"""Open target file and split it according to the differents lines .I.
+Then, replace some character to avoid problems."""
 	f = open(file, "r")
 	t = f.read().split(".I ")
 	for i in range(0, len(t)):  # Clean target file
@@ -29,6 +30,66 @@ Then, replace some character with space to avoid problems."""
 		t[i] = t[i].lower()
 	f.close()
 	return t
+
+
+def load_empty_words(empty_word_list):
+	"""Get word on the given list and build a list of them"""
+	f = open(empty_word_list, 'r')
+	t = f.readlines()
+	for i in range(0, len(t)):
+		t[i] = t[i].replace('\n', "")
+	return t
+
+
+def save_json(tab, fil):
+	"""Save a json named tab into a file named fil"""
+	txt = json.dumps(tab)
+	f = open(fil, "w")
+	f.write(txt)
+	f.close()
+
+
+def load_json(fil):
+	"""Load a file named fil into local variable tab"""
+	f = open(fil, "r")
+	txt = f.read()
+	tab = json.loads(txt)
+	return tab
+
+
+def text_cleanup(text):
+	"""Delete empty word and Stem words on the query"""
+	to_clean = text.split(" ")
+	cleanedQuery = []  # List of correct word
+	for i in to_clean:
+		if i != '':
+			if i not in motsVide:  # Add on the list if not empty word
+				ps = PorterStemmer()
+				i = ps.stem(i)
+				cleanedQuery.append(i)
+	return cleanedQuery
+
+
+
+
+
+def getTermFrenquency(frequencyVector):
+	sum = 0
+	for i in frequencyVector:  # Recuperation du nombre de mots dans le doc
+		sum = sum + frequencyVector[i]
+	for i in frequencyVector:  # Calcul du tf pour chaque doc
+		t = float(frequencyVector[i])/sum
+		frequencyVector[i] = round(t, 4)
+	return frequencyVector
+
+
+def similariteCos(vectDesc, vectReq):
+	prodScal = 0
+	for word in vectReq:
+		if vectDesc.has_key(word):
+			prodScal = prodScal+ vectDesc[word] * vectReq[word]
+	cos = prodScal / (normeVect(vectDesc) * normeVect(vectReq))
+	return cos
 
 
 def getOccurrenciesVector(doc, motsVides):
@@ -48,97 +109,8 @@ def getOccurrenciesVector(doc, motsVides):
 	return dico
 
 
-def cleanQueryVector(query, motsVides):
-	"""Delete empty word and Stem words on the query"""
-	query = query.split(" ")
-	cleanedQuery = []  # List of correct word
-	for i in query:
-		if i != '':
-			if i not in motsVides:  # Add on the list if not empty word
-				ps = PorterStemmer()
-				i = ps.stem(i)
-				cleanedQuery.append(i)
-	return cleanedQuery
-
-def getTermFrenquency(frequencyVector):
-	sum = 0
-	for i in frequencyVector:  # Recuperation du nombre de mots dans le doc
-		sum = sum + frequencyVector[i]
-	for i in frequencyVector:  # Calcul du tf pour chaque doc
-		t = float(frequencyVector[i])/sum
-		frequencyVector[i] = round(t, 4)
-	return frequencyVector
-
-
-def loadMotsVides(file):
-	f = open(file, 'r')
-	t = f.readlines()
-	for i in range(0, len(t)):
-		t[i] = t[i].replace('\n', "")
-	return t
-
-
-def DC(descTable, word):
-	cpt = 0
-	for i in descTable :
-		if word in i.keys():
-			cpt+=1
-	return cpt
-
-
-def idf2(descTable, tabWord):
-	n = len(descTable)
-	tmp = {}
-	for word in tabWord:
-		dc = DC(descTable, word)
-		if dc != 0:
-			tmp[word] = math.log10(n/dc)
-		else:
-			tmp[word] = 0
-	return tmp
-
-
-def save_json(tab, file):
-	txt = json.dumps(tab)
-	f = open(file, "w")
-	f.write(txt)
-	f.close() 
-	
-
-	
-def load_json(file):
-	f = open(file, "r")
-	txt = f.read()
-	tab = json.loads(txt)
-	return tab
-
-
-
-
-def similariteCos(vectDesc, vectReq):
-	prodScal = 0
-	for word in vectReq:
-		if vectDesc.has_key(word):
-			prodScal = prodScal+ vectDesc[word] * vectReq[word]
-	cos = prodScal / (normeVect(vectDesc) * normeVect(vectReq))
-	return cos
-
-
-def preprocessing(doc):
-	motsVides = motsVide
-	doc = doc.split(" ")
-	tab=[]
-	for i in doc:  # Read document
-		if i != '':  # Empty word check
-			if i not in motsVides:  # Useless word check
-				i = i.lower()  # make all words lower case
-				ps = PorterStemmer()  # Stem the word to simplify query in the future
-				i = ps.stem(i)
-				tab.append(i)
-	return tab
-
 def freq(word, doc):
-	tab = preprocessing(doc)
+	tab = text_cleanup(doc)
 	cpt = 0
 	for i in range(0, len(tab)):
 		if tab[i] == word:
@@ -147,7 +119,7 @@ def freq(word, doc):
 
 
 def word_count(doc):
-	tab = preprocessing(doc)
+	tab = text_cleanup(doc)
 	return len(tab)
 
 
@@ -203,7 +175,7 @@ def getTfIdfVector(list_of_docs):
 	dico={}
 
 	for i in range(1,len(list_of_docs)+1): # Read document
-		tmp_doc = preprocessing(list_of_docs[i])
+		tmp_doc = text_cleanup(list_of_docs[i])
 		for word in tmp_doc:
 			if dico[i][word] is None:
 				dico[i][word] = tf[list_of_docs[i]][word] * idf[word]
@@ -288,7 +260,7 @@ def main():
 
 
 def search(request):
-	vectRequestWord = cleanQueryVector(request, motsVide)
+	vectRequestWord = text_cleanup(request, motsVide)
 	descripteurs = load_json("data/descripteur.json")
 	vectRequestIDF = idf(descripteurs, vectRequestWord)
 	result = findSimilarite(descripteurs, vectRequestIDF)
@@ -308,6 +280,6 @@ def showResult(sortedDicoOfSimi):
 	return html
 
 
-motsVide = loadMotsVides("data/motsvides.txt")
+motsVide = load_empty_words("data/motsvides.txt")
 
 
