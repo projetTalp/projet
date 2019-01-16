@@ -4,13 +4,9 @@ import json
 import sys
 import math
 
-import copy
-import pandas as pd
-import numpy as np
 
 global motsVide
 
-#data_path = './abcnews-date-text.csv'
 
 def getDoc(file, id):
 	f = open(file, "r")
@@ -34,7 +30,35 @@ Then, replace some character with space to avoid problems."""
 	return t
 
 
-"""
+def getOccurrenciesVector(doc, motsVides):
+	"""Get the dictionnary which contains articles, then delete 'useless' words listed in the list motsVides
+	to count how much times a word is present on a document"""
+	doc = doc.split(" ")
+	dico = {}
+	for i in doc:  # Read document
+		if i != '':  # Empty word check
+			if i not in motsVides:  # Useless word check
+				ps = PorterStemmer()  # Stem the word to simplify query in the future
+				i = ps.stem(i)
+				if dico.has_key(i):  # Count word
+					dico[i] = dico[i]+1
+				else:
+					dico[i] = 1
+	return dico
+
+
+def cleanQueryVector(query, motsVides):
+	"""Delete empty word and Stem words on the query"""
+	query = query.split(" ")
+	cleanedQuery = []  # List of correct word
+	for i in query:
+		if i != '':
+			if i not in motsVides:  # Add on the list if not empty word
+				ps = PorterStemmer()
+				i = ps.stem(i)
+				cleanedQuery.append(i)
+	return cleanedQuery
+
 def getTermFrenquency(frequencyVector):
 	sum = 0
 	for i in frequencyVector:  # Recuperation du nombre de mots dans le doc
@@ -44,7 +68,7 @@ def getTermFrenquency(frequencyVector):
 		frequencyVector[i] = round(t, 4)
 	return frequencyVector
 
-""""
+
 def loadMotsVides(file):
 	f = open(file, 'r')
 	t = f.readlines()
@@ -52,7 +76,7 @@ def loadMotsVides(file):
 		t[i] = t[i].replace('\n', "")
 	return t
 
-""""
+
 def DC(descTable, word):
 	cpt = 0
 	for i in descTable :
@@ -71,7 +95,7 @@ def idf(descTable, tabWord):
 		else:
 			tmp[word] = 0
 	return tmp
-"""""
+
 
 
 def saveDescripteur(tab):
@@ -97,7 +121,8 @@ def loadDescripteurs():
 	tab = json.loads(txt)
 	return tab
 
-""""
+
+
 
 
 def similariteCos(vectDesc, vectReq):
@@ -109,6 +134,7 @@ def similariteCos(vectDesc, vectReq):
 	return cos
 
 
+"""
 #def findSimilarite(descripteurs, vectRequestIDF):
 #	result = {}
 #	i = 1
@@ -239,6 +265,16 @@ list of words.
 
     return sims
 
+def findSimilarite(descripteurs, vectRequestIDF):
+	result = {}
+	i = 1 
+	for vectDesc in descripteurs:
+		result[i] = similariteCos(vectDesc, vectRequestIDF)
+		i += 1
+	return result
+
+
+
 def normeVect(dic):
 	norm = 0
 	for i in dic:
@@ -262,7 +298,7 @@ def main():
 		return result
 	return 0
 
-"""""
+
 def search(request):
 	vectRequestWord = cleanQueryVector(request, motsVide)
 	descripteurs = loadDescripteurs()
@@ -282,7 +318,7 @@ def showResult(sortedDicoOfSimi):
 		html += "<div class='item'><a href='./doc/" + str(doc) + "' >Document numero"+str(doc)+"</a><p>Similarite : "+str(sortedDicoOfSimi[doc])+"</p></div>"
 	html += "</div>"
 	return html
-"""
+	
 
 
 motsVide = loadMotsVides("motsvides.txt")
