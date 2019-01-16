@@ -55,6 +55,7 @@ def cleanQueryVector(query, motsVides):
 	for i in query:
 		if i != '':
 			if i not in motsVides:  # Add on the list if not empty word
+				i = i.lower()
 				ps = PorterStemmer()
 				i = ps.stem(i)
 				cleanedQuery.append(i)
@@ -137,6 +138,8 @@ def preprocessing(doc):
 				tab.append(i)
 	return tab
 
+
+"""
 def freq(word, doc):
 	tab = preprocessing(doc)
 	cpt = 0
@@ -144,8 +147,8 @@ def freq(word, doc):
 		if tab[i]== word:
 			cpt +=0
 	return cpt
-
-
+	
+	
 def word_count(doc):
 	tab = preprocessing(doc)
 	return len(tab)
@@ -169,9 +172,9 @@ def idf(word, list_of_docs):
 
 def tf_idf(word, doc, list_of_docs):
 	return (tf(word, doc) * idf(word, list_of_docs))
+"""
 
-
-def generateTF(file, motsVide):
+def generateTF(file):
 	doc = loadDoc(file)
 	biblio = []
 	for i in range (1, len(doc)):
@@ -182,31 +185,37 @@ def generateTF(file, motsVide):
 	
 def generateIDF(file):
 	tf_doc = load_json("tf.json")
-	idf_tab = []
+	nb_doc = len(tf_doc) + 1
+	occ = {}
 	for doc in tf_doc:
 		for word in doc:
-			if idf_tab[word] is None:
-				idf_tab[word] = 1
+			if occ.has_key(word):
+				occ[word] += 1
 			else:
-				idf_tab[word] += 1
+				occ[word] = 1
+	
+	idf_tab = {}
+	for word in occ: 
+		idf_tab[word] = math.log(nb_doc/occ[word])
+	
 	save_json(idf_tab, "idf.json")
-	return
+	
 
 
-def getTfIdfVector(list_of_docs):
+def getTfIdfVector():
 	"""Get the dictionnary which contains articles, then delete 'useless' words listed in the list motsVides
 	to count how much times a word is present on a document"""
 	tf = load_json("tf.json")
 	idf = load_json("idf.json")
-	tmp_doc = []
-	dico={}
+	
+	tab = []
 
-	for i in range(1,len(list_of_docs)+1): # Read document
-		tmp_doc = preprocessing(list_of_docs[i])
-		for word in tmp_doc:
-			if dico[i][word] is None:
-				dico[i][word] = tf[list_of_docs[i]][word] * idf[word]
-	return dico
+	for doc in tf:
+		vectDoc={}
+		for word in doc:
+			vectDoc[word] = doc[word] * idf[word]
+		tab.append(vectDoc)
+	save_json(tab, "tfidf.json")
 
 
 def cosine(v1, v2):
@@ -310,4 +319,5 @@ def showResult(sortedDicoOfSimi):
 
 motsVide = loadMotsVides("motsvides.txt")
 
-
+#generateIDF("firstdata")
+getTfIdfVector()
