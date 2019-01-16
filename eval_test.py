@@ -31,8 +31,9 @@ def main():
         f = open("test_request.json", "r")
         txt = f.read()
         req = json.loads(txt)
-        for i in req:
-            getdf.search(i)
+        for i in range(1, len(req)):
+            print ("requete n "+ str(i))
+            print(getdf.search(req[i]))
 
 main()
 

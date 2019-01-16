@@ -3,6 +3,7 @@ from nltk.stem import PorterStemmer
 import json
 import sys
 import math
+import numpy as np
 
 
 global motsVide
@@ -85,7 +86,7 @@ def DC(descTable, word):
 	return cpt
 
 
-def idf(descTable, tabWord):
+def idf2(descTable, tabWord):
 	n = len(descTable)
 	tmp = {}
 	for word in tabWord:
@@ -97,8 +98,6 @@ def idf(descTable, tabWord):
 	return tmp
 
 
- 
-	
 def save_json(tab, file):
 	txt = json.dumps(tab)
 	f = open(file, "w")
@@ -125,7 +124,8 @@ def similariteCos(vectDesc, vectReq):
 	return cos
 
 
-def preprocessing(doc, motsVides):
+def preprocessing(doc):
+	motsVides = motsVide
 	doc = doc.split(" ")
 	tab=[]
 	for i in doc:  # Read document
@@ -138,37 +138,37 @@ def preprocessing(doc, motsVides):
 	return tab
 
 def freq(word, doc):
-    tab = preprocessing(doc)
-    cpt = 0
-    for i in range(0,len(tab))
-        if tab[i]== word
-            cpt +=0
-    return cpt
+	tab = preprocessing(doc)
+	cpt = 0
+	for i in range(0,len(tab)):
+		if tab[i]== word:
+			cpt +=0
+	return cpt
 
 
 def word_count(doc):
 	tab = preprocessing(doc)
-    return len(tab)
+	return len(tab)
 
 
 def tf(word, doc):
-    return (freq(word, doc) / float(word_count(doc)))
+	return freq(word, doc) / float(word_count(doc))
 
 
 def num_docs_containing(word, list_of_docs):
-    count = 0
-    for document in list_of_docs:
-        if freq(word, document) > 0:
-            count += 1
-    return 1 + count
+	count = 0
+	for document in list_of_docs:
+		if freq(word, document) > 0:
+			count += 1
+	return 1 + count
 
 
 def idf(word, list_of_docs):
-    return math.log(len(list_of_docs) /
-            float(num_docs_containing(word, list_of_docs)))
+	return math.log(len(list_of_docs) /
+		float(num_docs_containing(word, list_of_docs)))
 
 def tf_idf(word, doc, list_of_docs):
-    return (tf(word, doc) * idf(word, list_of_docs))
+	return (tf(word, doc) * idf(word, list_of_docs))
 
 
 def generateTF(file, motsVide):
@@ -202,32 +202,19 @@ def getTfIdfVector(list_of_docs):
 	dico={}
 
 	for i in range(1,len(list_of_docs)+1): # Read document
-		tmp_doc = preprocessing(list_of_docs[i], motsVides)
+		tmp_doc = preprocessing(list_of_docs[i])
 		for word in tmp_doc:
 			if dico[i][word] is None:
 				dico[i][word] = tf[list_of_docs[i]][word] * idf[word]
 	return dico
 
 
-def cleanQueryVector(query, motsVides):
-	"""Delete empty word and Stem words on the query"""
-	query = query.split(" ")
-	cleanedQuery = []  # List of correct word
-	for i in query:
-		if i != '':
-			if i not in motsVides:  # Add on the list if not empty word
-				ps = PorterStemmer()
-				i = ps.stem(i)
-				cleanedQuery.append(i)
-	return cleanedQuery
-
 def cosine(v1, v2):
-    v1 = np.array(v1)
-    v2 = np.array(v2)
-
-    return np.dot(v1, v2) / (np.sqrt(np.sum(v1**2)) * np.sqrt(np.sum(v2**2)))
+	v1 = np.array(v1)
+	v2 = np.array(v2)
+	return np.dot(v1, v2) / (np.sqrt(np.sum(v1**2)) * np.sqrt(np.sum(v2**2)))
 """
-# Pour élargir notre BDD
+# Pour elargir notre BDD
 def load_data():
     df = pd.read_csv(data_path)
     return df
@@ -276,7 +263,6 @@ def findSimilarite(descripteurs, vectRequestIDF):
 	return result
 
 
-
 def normeVect(dic):
 	norm = 0
 	for i in dic:
@@ -288,7 +274,6 @@ def normeVect(dic):
 def main():
 	
 	mode = sys.argv[1]
-	motsVide = loadMotsVides("motsvides.txt")
 
 	if mode == "-load":
 		file = sys.argv[2]
