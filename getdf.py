@@ -140,9 +140,9 @@ def preprocessing(doc):
 def freq(word, doc):
 	tab = preprocessing(doc)
 	cpt = 0
-	for i in range(0,len(tab)):
-		if tab[i]== word:
-			cpt +=0
+	for i in range(0, len(tab)):
+		if tab[i] == word:
+			cpt += 0
 	return cpt
 
 
@@ -167,6 +167,7 @@ def idf(word, list_of_docs):
 	return math.log(len(list_of_docs) /
 		float(num_docs_containing(word, list_of_docs)))
 
+
 def tf_idf(word, doc, list_of_docs):
 	return (tf(word, doc) * idf(word, list_of_docs))
 
@@ -178,10 +179,10 @@ def generateTF(file, motsVide):
 		vect = getOccurrenciesVector(doc[i], motsVide)
 		vect = getTermFrenquency(vect)
 		biblio.append(vect)
-	save_json(biblio, "tf.json")
+	save_json(biblio, "data/tf.json")
 	
 def generateIDF(file):
-	tf_doc = load_json("tf.json")
+	tf_doc = load_json("data/tf.json")
 	idf_tab = []
 	for doc in tf_doc:
 		for word in doc:
@@ -189,15 +190,15 @@ def generateIDF(file):
 				idf_tab[word] = 1
 			else:
 				idf_tab[word] += 1
-	save_json(idf_tab, "idf.json")
+	save_json(idf_tab, "data/idf.json")
 	return
 
 
 def getTfIdfVector(list_of_docs):
 	"""Get the dictionnary which contains articles, then delete 'useless' words listed in the list motsVides
 	to count how much times a word is present on a document"""
-	tf = load_json("tf.json")
-	idf = load_json("idf.json")
+	tf = load_json("data/tf.json")
+	idf = load_json("data/idf.json")
 	tmp_doc = []
 	dico={}
 
@@ -288,7 +289,7 @@ def main():
 
 def search(request):
 	vectRequestWord = cleanQueryVector(request, motsVide)
-	descripteurs = load_json("descripteur.json")
+	descripteurs = load_json("data/descripteur.json")
 	vectRequestIDF = idf(descripteurs, vectRequestWord)
 	result = findSimilarite(descripteurs, vectRequestIDF)
 	return result
@@ -305,9 +306,8 @@ def showResult(sortedDicoOfSimi):
 		html += "<div class='item'><a href='./doc/" + str(doc) + "' >Document numero"+str(doc)+"</a><p>Similarite : "+str(sortedDicoOfSimi[doc])+"</p></div>"
 	html += "</div>"
 	return html
-	
 
 
-motsVide = loadMotsVides("motsvides.txt")
+motsVide = loadMotsVides("data/motsvides.txt")
 
 
