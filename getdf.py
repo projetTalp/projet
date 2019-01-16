@@ -100,9 +100,6 @@ def loadDescripteurs():
 """"
 
 
-
-
-
 def similariteCos(vectDesc, vectReq):
 	prodScal = 0
 	for word in vectReq:
@@ -120,12 +117,30 @@ def similariteCos(vectDesc, vectReq):
 #		i += 1
 #	return result
 """
+def preprocessing(doc, motsVides):
+	doc = doc.split(" ")
+	tab=[]
+	for i in doc:  # Read document
+		if i != '':  # Empty word check
+			if i not in motsVides:  # Useless word check
+				i = i.lower()  # make all words lower case
+				ps = PorterStemmer()  # Stem the word to simplify query in the future
+				i = ps.stem(i)
+				tab.append(i)
+	return tab
+
 def freq(word, doc):
-    return doc.count(word)
+    tab = preprocessing(doc)
+    cpt = 0
+    for i in range(0,len(tab))
+        if tab[i]== word
+            cpt +=0
+    return cpt
 
 
 def word_count(doc):
-    return len(doc)
+	tab = preprocessing(doc)
+    return len(tab)
 
 
 def tf(word, doc):
@@ -144,22 +159,24 @@ def idf(word, list_of_docs):
     return math.log(len(list_of_docs) /
             float(num_docs_containing(word, list_of_docs)))
 
-
 def tf_idf(word, doc, list_of_docs):
     return (tf(word, doc) * idf(word, list_of_docs))
 
-def getOccurrenciesVector(doc, motsVides):
+
+def getTfIdfVector(list_of_docs):
 	"""Get the dictionnary which contains articles, then delete 'useless' words listed in the list motsVides
 	to count how much times a word is present on a document"""
-	doc = doc.split(" ")
-	dico = {}
-	for i in doc:  # Read document
-		if i != '':  # Empty word check
-			if i not in motsVides:  # Useless word check
-				i = i.lower() # make all words lower case
-				ps = PorterStemmer()  # Stem the word to simplify query in the future
-				i = ps.stem(i)
-				dico[i] = tf(i, doc)
+    tf = load_json()
+    idf = load_json()
+
+    tmp_doc = []
+	dico={}
+
+	for i in range(1,len(list_of_docs)+1): # Read document
+        tmp_doc = preprocessing(list_of_docs[i], motsVides)
+        for word in tmp_doc:
+            if dico[i][word] is None:
+			    dico[i][word] = tf[list_of_docs[i]][word] * idf[word]
 	return dico
 
 
@@ -182,7 +199,6 @@ def cosine(v1, v2):
     return np.dot(v1, v2) / (np.sqrt(np.sum(v1**2)) * np.sqrt(np.sum(v2**2)))
 
 # Pour élargir notre BDD
-
 def load_data():
     df = pd.read_csv(data_path)
     return df
