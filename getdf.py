@@ -70,7 +70,14 @@ def text_cleanup(text):
 	return cleanedQuery
 
 
-
+def getTFIdfResquest(req):
+	tmp = getOccurrenciesVector(req, motsVides)
+	tf = getTermFrenquency(tmp)
+	idf = load_json("idf.json")
+	tf_idf = {}
+	for word in tf:
+		tf_idf[word] = tf[word] * idf[word]
+	return tf_idf
 
 
 def getTermFrenquency(frequencyVector):
@@ -287,4 +294,4 @@ def showResult(sortedDicoOfSimi):
 motsVide = load_empty_words("data/motsvides.txt")
 
 #generateIDF("firstdata")
-getTfIdfVector()
+##getTfIdfVector()

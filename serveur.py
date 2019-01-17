@@ -22,7 +22,7 @@ def search():
 
 @route('/doc/<num>')	
 def getDoc(num):
-	return template("view/header.html") + "<p>" + getdf.getDoc("firstdata", int(num)) + "</p>" + template("view/footer.html")
+	return template("view/header.html") + "<p>" + getdf.getDoc("./data/firstdata", int(num)) + "</p>" + template("view/footer.html")
 	
 run(host='localhost', port=8080)
 
