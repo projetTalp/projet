@@ -17,7 +17,7 @@ def search():
 	#data = getdf.getDoc("firstdata", 3)
 	#return getdf.test()
 	#return "<p>"+data+"</p>"
-	return template("view/header.html") + template("view/form_result.html", query = req) + getdf.showResult({1:0.5, 2:0.3, 5:0.1}) + template("view/footer.html")
+	return template("view/header.html") + template("view/form_result.html", query = req) + getdf.showResult(getdf.sortResult(getdf.search(req))) + template("view/footer.html")
 
 
 @route('/doc/<num>')	

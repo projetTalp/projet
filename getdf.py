@@ -71,12 +71,13 @@ def text_cleanup(text):
 
 
 def getTFIdfResquest(req):
-	tmp = getOccurrenciesVector(req, motsVides)
+	tmp = getOccurrenciesVector(req, motsVide)
 	tf = getTermFrenquency(tmp)
 	idf = load_json("idf.json")
 	tf_idf = {}
 	for word in tf:
-		tf_idf[word] = tf[word] * idf[word]
+		if(idf.has_key(word)):
+			tf_idf[word] = tf[word] * idf[word]
 	return tf_idf
 
 
@@ -271,22 +272,21 @@ def main():
 
 
 def search(request):
-	vectRequestWord = text_cleanup(request, motsVide)
-	descripteurs = load_json("data/descripteur.json")
-	vectRequestIDF = idf(descripteurs, vectRequestWord)
+	vectRequestIDF = getTFIdfResquest(request)
+	descripteurs = load_json("tfidf.json")
 	result = findSimilarite(descripteurs, vectRequestIDF)
 	return result
 
 def sortResult(dicoOfSimilarite):
 	print(dicoOfSimilarite)
-	s=sorted(dicoOfSimilarite, key=dicoOfSimilarite.__getitem__)
+	s = sorted(dicoOfSimilarite.items(), key=lambda t: t[1], reverse=True)
 	print(s)
 	return s
 	
 def showResult(sortedDicoOfSimi):
 	html = "<div class='result'><h3>Listes des resultats</h3>"
 	for doc in sortedDicoOfSimi:
-		html += "<div class='item'><a href='./doc/" + str(doc) + "' >Document numero"+str(doc)+"</a><p>Similarite : "+str(sortedDicoOfSimi[doc])+"</p></div>"
+		html += "<div class='item'><a href='./doc/" + str(doc[0]) + "' >Document numero"+str(doc[0])+"</a><p>Similarite : "+str(doc[1])+"</p></div>"
 	html += "</div>"
 	return html
 
