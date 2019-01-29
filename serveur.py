@@ -1,6 +1,7 @@
 
 from bottle import route, run, template
 from bottle import get, post, request
+import time
 import getdf
 
 
@@ -17,7 +18,10 @@ def search():
 	#data = getdf.getDoc("firstdata", 3)
 	#return getdf.test()
 	#return "<p>"+data+"</p>"
-	return template("view/header.html") + template("view/form_result.html", query = req) + getdf.showResult(getdf.sortResult(getdf.search(req))) + template("view/footer.html")
+	h = time.time()
+	rez = getdf.sortResult(getdf.search(req))
+	h = time.time() - h
+	return template("view/header.html") + template("view/form_result.html", query = req, time = h) + getdf.showResult(rez) + template("view/footer.html")
 
 
 @route('/doc/<num>')	
