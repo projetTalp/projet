@@ -31,13 +31,34 @@ def main(mode, filename):
         getdf.getTfIdfVector()
 
     elif mode == "relations":
+        rel = {}  # Creation of the relation dictionnary
         f = open(filename, "r")
-        print(f.read())
+        data = f.readlines()
+        for line in data:  # Get a relation and store it to the dictionnary
+            elements = line.split()
+            doc = elements[0]
+            query = elements[1]
+            if not rel.has_key(doc):
+                rel[doc] = []
+            rel[doc].append(query)
+        getdf.save_json(rel, "data/relations.json")
+
+    elif mode == "database":
+        f = open(filename, "r")
+        t = f.read().split(".I ")
+        for i in range(0, len(t)):  # Clean target file
+            a = t[i].split('\n')
+            text = ""
+            for z in range(1, len(a)):
+                text = text + " " + a[z]
+                t[i] = text
+        f.close()
+        getdf.save_json(t, "data/database.json")
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Update or creation of differents json file")
-    parser.add_argument("--mode", required=True, help="Select one of : query/tfidf/relations")
+    parser.add_argument("--mode", required=True, help="Select one of : query/tfidf/relations/database")
     parser.add_argument("--filename", required=True, help="name of the target file")
     args = parser.parse_args()
     main(args.mode, args.filename)
