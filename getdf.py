@@ -23,12 +23,29 @@ def loadDoc(file):
 Then, replace some character to avoid problems."""
 	t = load_json("data/database.json")
 	for i in range(0, len(t)):  # Clean target file
-		t[i] = t[i].replace('\n', " ")
-		t[i] = t[i].replace(',', " ")
-		t[i] = t[i].replace('.', " ")
-		t[i] = t[i].replace('"', " ")
-		t[i] = t[i].lower()
+		t[i] = cleanup(t[i])
 	return t
+
+
+def cleanup(string):
+	string = string.replace('\n', " ")
+	string = string.replace(',', " ")
+	string = string.replace('.', " ")
+	string = string.replace('"', " ")
+	string = string.replace('(', " ")
+	string = string.replace(')', " ")
+	string = string.replace(']', " ")
+	string = string.replace('[', " ")
+	string = string.replace('/', " ")
+	string = string.replace('\t', " ")
+	string = string.replace('-', " ")
+	string = string.replace('_', " ")
+	string = string.replace('?', " ")
+	string = string.replace('!', " ")
+	string = string.replace('*', " ")
+	string = string.replace(';', " ")
+	string = string.lower()
+	return string
 
 
 def load_empty_words(empty_word_list):
@@ -70,6 +87,7 @@ def text_cleanup(text):
 
 
 def getTFIdfResquest(req):
+	req = cleanup(req)
 	tmp = getOccurrenciesVector(req, motsVide)
 	tf = getTermFrenquency(tmp)
 	idf = load_json("data/idf.json")
@@ -95,8 +113,11 @@ def similariteCos(vectDesc, vectReq):
 	for word in vectReq:
 		if vectDesc.has_key(word):
 			prodScal = prodScal+ vectDesc[word] * vectReq[word]
-	cos = prodScal / (normeVect(vectDesc) * normeVect(vectReq))
-	return cos
+	normeReq = normeVect(vectReq)
+	if normeReq != 0:
+		cos = prodScal / (normeVect(vectDesc) * normeReq)
+		return cos
+	return 0
 
 
 def getOccurrenciesVector(doc, motsVides):
@@ -116,42 +137,6 @@ def getOccurrenciesVector(doc, motsVides):
 	return dico
 
 
-
-"""
-def freq(word, doc):
-	tab = text_cleanup(doc)
-	cpt = 0
-	for i in range(0, len(tab)):
-		if tab[i] == word:
-			cpt += 0
-	return cpt
-	
-	
-def word_count(doc):
-	tab = text_cleanup(doc)
-	return len(tab)
-
-
-def tf(word, doc):
-	return freq(word, doc) / float(word_count(doc))
-
-
-def num_docs_containing(word, list_of_docs):
-	count = 0
-	for document in list_of_docs:
-		if freq(word, document) > 0:
-			count += 1
-	return 1 + count
-
-
-def idf(word, list_of_docs):
-	return math.log(len(list_of_docs) /
-		float(num_docs_containing(word, list_of_docs)))
-
-
-def tf_idf(word, doc, list_of_docs):
-	return (tf(word, doc) * idf(word, list_of_docs))
-"""
 
 def generateTF(file):
 	doc = loadDoc(file)
@@ -198,46 +183,7 @@ def cosine(v1, v2):
 	v2 = np.array(v2)
 	return np.dot(v1, v2) / (np.sqrt(np.sum(v1**2)) * np.sqrt(np.sum(v2**2)))
 
-"""
-# Pour elargir notre BDD
-def load_data():
-    df = pd.read_csv(data_path)
-    return df
-def get_results(self, query, max_rows=10):
-	score = self.get_score(query)
-	results_df = copy.deepcopy(self.df)
-	results_df['ranking_score'] = score
-	results_df = results_df.loc[score > 0]
-	results_df = results_df.iloc[np.argsort(-results_df['ranking_score'].values)]
-	results_df = results_df.head(max_rows)
-	self.print_results(results_df, query)
-	return results_df
 
-def similarities(self, list_of_words):
-        ###Returns a list of all the [docname, similarity_score] pairs relative to a list of words. 
-        
-    # building the query dictionary
-    query_dict = {}
-    for w in list_of_words:
-        query_dict[w] = query_dict.get(w, 0.0) + 1.0
-
-    # normalizing the query
-    length = float(len(list_of_words))
-    for k in query_dict:
-        query_dict[k] = query_dict[k] / length
-
-    # computing the list of similarities
-    sims = []
-    for doc in self.documents:
-        score = 0.0
-        doc_dict = doc[1]
-        for k in query_dict:
-            if k in doc_dict:
-                score += (query_dict[k] / self.corpus_dict[k]) + (doc_dict[k] / self.corpus_dict[k])
-        sims.append([doc[0], score])
-
-    return sims
-"""
 
 def findSimilarite(descripteurs, vectRequestIDF):
 	result = {}

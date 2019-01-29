@@ -19,7 +19,7 @@ def main():
     rel = json.loads(jsonstr)
 
     # Run n research with the n queries stored in test_request.json
-    f = open("data/test_request.json", "r")
+    f = open("data/request.json", "r")
     txt = f.read()
     req = json.loads(txt)
     for i in range(1, len(req)):

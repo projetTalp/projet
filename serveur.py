@@ -12,12 +12,6 @@ def index():
 @post('/search')
 def search():
 	req = request.forms.get('request')
-	print (req)
-	#res = getdf.search(req)
-	#getdf.sortResult(res)
-	#data = getdf.getDoc("firstdata", 3)
-	#return getdf.test()
-	#return "<p>"+data+"</p>"
 	h = time.time()
 	rez = getdf.sortResult(getdf.search(req))
 	h = time.time() - h
