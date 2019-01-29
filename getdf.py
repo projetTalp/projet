@@ -282,9 +282,7 @@ def search(request):
 	return result
 
 def sortResult(dicoOfSimilarite):
-	print(dicoOfSimilarite)
 	s = sorted(dicoOfSimilarite.items(), key=lambda t: t[1], reverse=True)
-	print(s)
 	return s
 	
 def showResult(sortedDicoOfSimi):
