@@ -11,17 +11,17 @@ global motsVide
 
 def getDoc(file, id):
 	"""Load a file and split it every time '.I' appear"""
-	f = open(file, "r")
-	t = (f.read().split(".I "))[id]
-	f.close()
+	#f = open(file, "r")
+	#t = (f.read().split(".I "))[id]
+	#f.close()
+	t = load_json("data/database.json")[id]
 	return t
 
 
 def loadDoc(file):
 	"""Open target file and split it according to the differents lines .I.
 Then, replace some character to avoid problems."""
-	f = open(file, "r")
-	t = f.read().split(".I ")
+	t = load_json("data/database.json")
 	for i in range(0, len(t)):  # Clean target file
 		t[i] = t[i].replace('\n', " ")
 		t[i] = t[i].replace(',', " ")
@@ -252,7 +252,7 @@ def normeVect(dic):
 	norm = 0
 	for i in dic:
 		norm = norm + (float(dic[i]))**2
-		norm = math.sqrt(norm)
+	norm = math.sqrt(norm)
 	return norm
 
 
@@ -291,7 +291,50 @@ def showResult(sortedDicoOfSimi):
 	return html
 
 
+
+
+
+
+
+
+
+def loadBaseFileProf(file):
+	"""Open target file and split it according to the differents lines .I.
+Then, replace some character to avoid problems."""
+	f = open(file, "r")
+	t = f.read().split(".I ")
+	for i in range(0, len(t)):  # Clean target file
+		a = t[i].split('\n')
+		text = ""
+		for z in range(1,len(a)):
+			text = text + " " + a[z]
+		#text = text.replace(',', " ")
+		#text = text.replace('.', " ")
+		#text = text.replace('"', " ")
+		#text = text.lower()
+		t[i] = text
+	f.close()
+	return t
+
+
+def loadBaseCSV(file):
+	"""Open target file and split it according to the differents lines .I.
+Then, replace some character to avoid problems."""
+	f = open(file, "r")
+	t = f.read().split("\n")
+	f.close()
+	return t
+
+def generate_JSON_DataBase():
+	database = loadBaseFileProf("data/firstdata")# + loadBaseCSV("")
+	save_json(database, "data/database.json")
+
+
+
+
+
 motsVide = load_empty_words("data/motsvides.txt")
 
 #generateIDF("firstdata")
 ##getTfIdfVector()
+generate_JSON_DataBase()
