@@ -28,7 +28,6 @@ Then, replace some character to avoid problems."""
 		t[i] = t[i].replace('.', " ")
 		t[i] = t[i].replace('"', " ")
 		t[i] = t[i].lower()
-	f.close()
 	return t
 
 
@@ -324,7 +323,7 @@ Then, replace some character to avoid problems."""
 	return t
 
 def generate_JSON_DataBase():
-	database = loadBaseFileProf("data/firstdata")# + loadBaseCSV("") ##TODO: ajouter les différents fichiers de données
+	database = loadBaseFileProf("data/firstdata")# + loadBaseCSV("") ##TODO: ajouter les differents fichiers de donnees
 	save_json(database, "data/database.json")
 
 motsVide = load_empty_words("data/motsvides.txt")
