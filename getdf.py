@@ -73,7 +73,7 @@ def text_cleanup(text):
 def getTFIdfResquest(req):
 	tmp = getOccurrenciesVector(req, motsVide)
 	tf = getTermFrenquency(tmp)
-	idf = load_json("idf.json")
+	idf = load_json("data/idf.json")
 	tf_idf = {}
 	for word in tf:
 		if(idf.has_key(word)):
@@ -177,27 +177,28 @@ def generateIDF(file):
 	for word in occ: 
 		idf_tab[word] = math.log(nb_doc/occ[word])
 	
-	save_json(idf_tab, "idf.json")
+	save_json(idf_tab, "data/idf.json")
 
 
 def getTfIdfVector():
 	"""Get the dictionnary which contains articles, then delete 'useless' words listed in the list motsVides
 	to count how much times a word is present on a document"""
-	tf = load_json("tf.json")
-	idf = load_json("idf.json")
+	tf = load_json("data/tf.json")
+	idf = load_json("data/idf.json")
 	tab = []
 	for doc in tf:
 		vectDoc={}
 		for word in doc:
 			vectDoc[word] = doc[word] * idf[word]
 		tab.append(vectDoc)
-	save_json(tab, "tfidf.json")
+	save_json(tab, "data/tfidf.json")
 
 
 def cosine(v1, v2):
 	v1 = np.array(v1)
 	v2 = np.array(v2)
 	return np.dot(v1, v2) / (np.sqrt(np.sum(v1**2)) * np.sqrt(np.sum(v2**2)))
+
 """
 # Pour elargir notre BDD
 def load_data():
@@ -259,21 +260,24 @@ def normeVect(dic):
 def main():
 	
 	mode = sys.argv[1]
-
+	
 	if mode == "-load":
-		file = sys.argv[2]
-		generateTF(file, motsVide)
+		generateTF("data/firstdata")
+		generateIDF("data/firstdata")
+		getTfIdfVector()
 
 	elif mode == "-search":
 		request = sys.argv[2]
 		result = search(request)
 		return result
+	elif mode == "-selectDatabase":
+		generate_JSON_DataBase()
 	return 0
 
 
 def search(request):
 	vectRequestIDF = getTFIdfResquest(request)
-	descripteurs = load_json("tfidf.json")
+	descripteurs = load_json("data/tfidf.json")
 	result = findSimilarite(descripteurs, vectRequestIDF)
 	return result
 
@@ -289,12 +293,6 @@ def showResult(sortedDicoOfSimi):
 		html += "<div class='item'><a href='./doc/" + str(doc[0]) + "' >Document numero"+str(doc[0])+"</a><p>Similarite : "+str(doc[1])+"</p></div>"
 	html += "</div>"
 	return html
-
-
-
-
-
-
 
 
 
@@ -326,15 +324,9 @@ Then, replace some character to avoid problems."""
 	return t
 
 def generate_JSON_DataBase():
-	database = loadBaseFileProf("data/firstdata")# + loadBaseCSV("")
+	database = loadBaseFileProf("data/firstdata")# + loadBaseCSV("") ##TODO: ajouter les différents fichiers de données
 	save_json(database, "data/database.json")
-
-
-
-
 
 motsVide = load_empty_words("data/motsvides.txt")
 
-#generateIDF("firstdata")
-##getTfIdfVector()
-generate_JSON_DataBase()
+
