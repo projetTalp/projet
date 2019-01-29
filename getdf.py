@@ -191,13 +191,14 @@ def getTfIdfVector():
 		for word in doc:
 			vectDoc[word] = doc[word] * idf[word]
 		tab.append(vectDoc)
-	save_json(tab, "tfidf.json")
+	save_json(tab, "data/tfidf.json")
 
 
 def cosine(v1, v2):
 	v1 = np.array(v1)
 	v2 = np.array(v2)
 	return np.dot(v1, v2) / (np.sqrt(np.sum(v1**2)) * np.sqrt(np.sum(v2**2)))
+
 """
 # Pour elargir notre BDD
 def load_data():
