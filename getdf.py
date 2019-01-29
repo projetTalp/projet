@@ -73,7 +73,7 @@ def text_cleanup(text):
 def getTFIdfResquest(req):
 	tmp = getOccurrenciesVector(req, motsVide)
 	tf = getTermFrenquency(tmp)
-	idf = load_json("idf.json")
+	idf = load_json("data/idf.json")
 	tf_idf = {}
 	for word in tf:
 		if(idf.has_key(word)):
@@ -275,7 +275,7 @@ def main():
 
 def search(request):
 	vectRequestIDF = getTFIdfResquest(request)
-	descripteurs = load_json("tfidf.json")
+	descripteurs = load_json("data/tfidf.json")
 	result = findSimilarite(descripteurs, vectRequestIDF)
 	return result
 

@@ -30,10 +30,14 @@ def main(mode, filename):
         print("TFIDF Generation")
         getdf.getTfIdfVector()
 
+    elif mode == "relations":
+        f = open(filename, "r")
+        print(f.read())
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Update or creation of differents json file")
-    parser.add_argument("--mode", required=True, help="Select one of : query/tfidf")
+    parser.add_argument("--mode", required=True, help="Select one of : query/tfidf/relations")
     parser.add_argument("--filename", required=True, help="name of the target file")
     args = parser.parse_args()
     main(args.mode, args.filename)
