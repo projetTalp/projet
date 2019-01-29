@@ -1,4 +1,6 @@
 import sys
+from time import sleep
+
 import getdf
 import json
 
@@ -35,8 +37,9 @@ def main():
         txt = f.read()
         req = json.loads(txt)
         for i in range(1, len(req)):
-            print ("request n" + str(i))
-            print(getdf.search(req[i]))
+            print ("request n" + str(i) + ":" + str(req[i]))
+            print(getdf.sortResult(getdf.search(req[i])))
+            sleep(30)
 
 
 main()

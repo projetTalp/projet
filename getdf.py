@@ -177,14 +177,14 @@ def generateIDF(file):
 	for word in occ: 
 		idf_tab[word] = math.log(nb_doc/occ[word])
 	
-	save_json(idf_tab, "idf.json")
+	save_json(idf_tab, "data/idf.json")
 
 
 def getTfIdfVector():
 	"""Get the dictionnary which contains articles, then delete 'useless' words listed in the list motsVides
 	to count how much times a word is present on a document"""
-	tf = load_json("tf.json")
-	idf = load_json("idf.json")
+	tf = load_json("data/tf.json")
+	idf = load_json("data/idf.json")
 	tab = []
 	for doc in tf:
 		vectDoc={}
@@ -252,7 +252,7 @@ def normeVect(dic):
 	norm = 0
 	for i in dic:
 		norm = norm + (float(dic[i]))**2
-		norm = math.sqrt(norm)
+	norm = math.sqrt(norm)
 	return norm
 
 
@@ -261,8 +261,9 @@ def main():
 	mode = sys.argv[1]
 
 	if mode == "-load":
-		file = sys.argv[2]
-		generateTF(file, motsVide)
+		generateTF("data/firstdata")
+		generateIDF("data/firstdata")
+		getTfIdfVector()
 
 	elif mode == "-search":
 		request = sys.argv[2]
@@ -290,8 +291,6 @@ def showResult(sortedDicoOfSimi):
 	html += "</div>"
 	return html
 
-
 motsVide = load_empty_words("data/motsvides.txt")
 
-#generateIDF("firstdata")
-##getTfIdfVector()
+
