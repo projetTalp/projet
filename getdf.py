@@ -271,6 +271,7 @@ def main():
 		return result
 	elif mode == "-selectDatabase":
 		generate_JSON_DataBase()
+		print("ok ?")
 	return 0
 
 
@@ -305,13 +306,24 @@ Then, replace some character to avoid problems."""
 		text = ""
 		for z in range(1,len(a)):
 			text = text + " " + a[z]
-		#text = text.replace(',', " ")
-		#text = text.replace('.', " ")
-		#text = text.replace('"', " ")
-		#text = text.lower()
 		t[i] = text
 	f.close()
-	return t
+	save_json(t, file + ".json")
+	
+	
+def loadBaseNYT(file):
+	"""Open target file and split it according to the differents lines .I.
+Then, replace some character to avoid problems."""
+	f = open(file, "r")
+	t = f.read().split("URL:")
+	for i in range(0, len(t)):  # Clean target file
+		a = t[i].split('\n')
+		text = ""
+		for z in range(1,len(a)):
+			text = text + " " + a[z]
+		t[i] = text
+	f.close()
+	save_json(t, "data/NYT.json")
 
 
 def loadBaseCSV(file):
@@ -323,9 +335,12 @@ Then, replace some character to avoid problems."""
 	return t
 
 def generate_JSON_DataBase():
-	database = loadBaseFileProf("data/firstdata")# + loadBaseCSV("") ##TODO: ajouter les differents fichiers de donnees
+	database = load_json("data/firstdata.json")# + load_json("data/NYT.json") ##TODO: choisir ici la bdd 
 	save_json(database, "data/database.json")
 
 motsVide = load_empty_words("data/motsvides.txt")
+
+#loadBaseFileProf("data/firstdata")
+#generate_JSON_DataBase()
 
 
