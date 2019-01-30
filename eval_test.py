@@ -14,7 +14,7 @@ def is_in(liste, element):
 
 def main():
     # Get dictonary of relations between query and documents
-    jsonfile= open("data/relations.json")
+    jsonfile = open("data/relations.json")
     jsonstr = jsonfile.read()
     rel = json.loads(jsonstr)
 
