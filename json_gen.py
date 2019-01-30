@@ -99,3 +99,4 @@ if __name__ == '__main__':
 	parser.add_argument('-fn', "--filename", nargs='+', required=False, help="if needed, the differents source files")
 	args = parser.parse_args()
 	main(args.mode, args.filename)
+
