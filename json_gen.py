@@ -10,36 +10,42 @@ def loadBaseFileProf(filename):
 Then, replace some character to avoid problems."""
 	f = open(filename, "r")
 	t = f.read().split(".I ")
+	c = 0 
 	for i in range(0, len(t)):  # Clean target file
 		a = t[i].split('\n')
 		text = ""
 		for z in range(1, len(a)):
 			text = text + " " + a[z]
-		t[i] = text
+		if text != "":
+			t[c] = text
+			c = c+1
 	f.close()
 	td.save_json(t, filename + ".json")
 
-
+"""
 def loadBaseCSV(filename):
-	"""Open target file and split it according to the differents lines .I.
-Then, replace some character to avoid problems."""
+	Open target file and split it according to the differents lines .I.
+Then, replace some character to avoid problems.
 	f = open(filename, "r")
 	t = f.read().split("\n")
 	f.close()
 	return t
-
+"""
 
 def loadBaseNYT(filename):
 	"""Open target file and split it according to the differents lines .I.
 Then, replace some character to avoid problems."""
 	f = open(filename, "r")
 	t = f.read().split("URL:")
+	c = 0
 	for i in range(0, len(t)):  # Clean target file
 		a = t[i].split('\n')
 		text = ""
 		for z in range(1, len(a)):
 			text = text + " " + a[z]
-		t[i] = text
+		if text != "":
+			t[c] = text
+			c = c+1
 	f.close()
 	td.save_json(t, "data/NYT.json")
 
@@ -91,11 +97,17 @@ def main(mode, filename):
 
 	elif mode == "database":
 		generate_JSON_DataBase(filename)
+		
+	elif mode == "load-NYT":
+		loadBaseNYT(filename[0])
+		
+	elif mode == "load-BaseProf":
+		loadBaseFileProf(filename[0])
 
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description="Update or creation of differents json file")
-	parser.add_argument('-m', "--mode", required=True, help="Select one of : query/tfidf/relations/database")
+	parser.add_argument('-m', "--mode", required=True, help="Select one of : query/tfidf/relations/database/load-NYT/load-BaseProf")
 	parser.add_argument('-fn', "--filename", nargs='+', required=False, help="if needed, the differents source files")
 	args = parser.parse_args()
 	main(args.mode, args.filename)
