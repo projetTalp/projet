@@ -1,0 +1,25 @@
+## Partie Génération (json_gen.py)
+
+	python json_gen.py -h => affiche l'aide
+
+étapes de génération :
+	1. Importer les fichiers des bases de donnée en brut
+	2. les transformer en Json avec
+		 python json_gen.py -m load-BaseProf -fn data/CISI.ALLnettoye 
+		 python json_gen.py -m load-NYC -fn data/nytimes_news_articlesbis.txt
+	3. Choix de la base de données (possibilité de fusionner les plusieurs bd):
+		 python json_gen.py -m database [liste fichiers json]
+	4. Génération de tfidf
+		python json_gen.py -m tfidf
+		
+Pour utiliser le script des tests :
+	Générer les requetes et les relations avec 
+		python json_gen.py -m relations
+		python json_gen.py -m query
+		
+## Partie recherche d'un doc via une requete
+
+	lancer le serveur avec : python serveur.py
+	puis accéder à : localhost:8080/index
+	
+
