@@ -22,6 +22,8 @@ def main():
     f = open("data/request.json", "r")
     txt = f.read()
     req = json.loads(txt)
+    precision = []
+    rappel = []
     for i in range(1, len(req)):
         print ("request n" + str(i) + ":" + str(req[i]))
         if rel.has_key(str(i)):
@@ -32,12 +34,24 @@ def main():
                 rep_ex_doc.append(rep_ex[j][0])
             # print rep_ex_doc
             # print rep_th
-            some = 0
+            s = 0
             for j in range(len(rep_th)):
                 if is_in(rep_th, rep_ex_doc[j]):
-                    some = some+1
-            print (str(some) + "/" + str(len(rep_th)))
-            sleep(1)
+                    s = s+1
+            print (str(s) + "/" + str(len(rep_th)))
+            precision.append(float(s)/float(len(rep_ex_doc)))
+            rappel.append(float(s)/float(len(rep_th)))
+    # Calcul precision et rappel
+    acc_pre = 0
+    for k in precision:
+        acc_pre = acc_pre + k
+    acc_pre = acc_pre/len(precision)
+    print ("precision : " + str(acc_pre))
+    acc_rap = 0
+    for k in rappel:
+        acc_rap = acc_rap + k
+    acc_rap = acc_rap/len(rappel)
+    print ("rappel : " + str(acc_rap))
 
 
 main()
@@ -45,4 +59,3 @@ main()
 # TODO ajout calcul rappel preci vitesse(comparer avec la taille de la base)
 
 # ++ embeding de mots/comment representer un doc autrement + distance entre deux documents
-
