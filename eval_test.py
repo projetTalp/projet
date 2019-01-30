@@ -30,8 +30,8 @@ def main():
             rep_ex_doc = []
             for j in range(len(rep_th)):
                 rep_ex_doc.append(rep_ex[j][0])
-            # rep_ex_doc
-            # rep_th
+            # print rep_ex_doc
+            # print rep_th
             some = 0
             for j in range(len(rep_th)):
                 if is_in(rep_th, rep_ex_doc[j]):

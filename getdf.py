@@ -17,7 +17,7 @@ def getTFIdfResquest(req):
 	idf = td.load_json("data/idf.json")
 	tf_idf = {}
 	for word in tf:
-		if(idf.has_key(word)):
+		if idf.has_key(word):
 			tf_idf[word] = tf[word] * idf[word]
 	return tf_idf
 

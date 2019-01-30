@@ -44,14 +44,17 @@ Then, replace some character to avoid problems."""
 	td.save_json(t, "data/NYT.json")
 
 
-def generate_JSON_DataBase():
-	database = td.load_json("data/firstdata.json") # + load_json("data/NYT.json") ##TODO: choisir ici la bdd
+def generate_JSON_DataBase(filenames):
+	database = []
+	for filename in filenames :
+		js = td.load_json(filename)
+		database = database + js
 	td.save_json(database, "data/database.json")
 
 
 def main(mode, filename):
 	if mode == "query":  # Generate the json containing different queries
-		f = open(filename, "r")
+		f = open("data/CISI.QRY", "r")
 		t = f.read().split(".I")
 		for i in range(0, len(t)):  # Clean target file
 			a = t[i].split('\n')
@@ -73,9 +76,9 @@ def main(mode, filename):
 		print("TFIDF Generation")
 		getdf.getTfIdfVector()
 
-	elif mode == "relations":
+	elif mode == "relations":  # For test
 		rel = {}  # Creation of the relation dictionnary
-		f = open(filename, "r")
+		f = open("data/CISI.REL", "r")
 		data = f.readlines()
 		for line in data:  # Get a relation and store it to the dictionnary
 			elements = line.split()
@@ -87,21 +90,12 @@ def main(mode, filename):
 		td.save_json(rel, "data/relations.json")
 
 	elif mode == "database":
-		f = open(filename, "r")
-		t = f.read().split(".I ")
-		for i in range(0, len(t)):  # Clean target file
-			a = t[i].split('\n')
-			text = ""
-			for z in range(1, len(a)):
-				text = text + " " + a[z]
-				t[i] = text
-		f.close()
-		td.save_json(t, "data/database.json")
+		generate_JSON_DataBase(filename)
 
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description="Update or creation of differents json file")
-	parser.add_argument("--mode", required=True, help="Select one of : query/tfidf/relations/database")
-	parser.add_argument("--filename", required=False, help="name of the target file")
+	parser.add_argument('-m', "--mode", required=True, help="Select one of : query/tfidf/relations/database")
+	parser.add_argument('-fn', "--filename", nargs='+', required=False, help="if needed, the differents source files")
 	args = parser.parse_args()
 	main(args.mode, args.filename)
