@@ -11,9 +11,9 @@ global motsVide
 
 def getDoc(file, id):
 	"""Load a file and split it every time '.I' appear"""
-	#f = open(file, "r")
-	#t = (f.read().split(".I "))[id]
-	#f.close()
+	# f = open(file, "r")
+	# t = (f.read().split(".I "))[id]
+	# f.close()
 	t = load_json("data/database.json")[id]
 	return t
 
@@ -263,7 +263,7 @@ Then, replace some character to avoid problems."""
 	for i in range(0, len(t)):  # Clean target file
 		a = t[i].split('\n')
 		text = ""
-		for z in range(1,len(a)):
+		for z in range(1, len(a)):
 			text = text + " " + a[z]
 		t[i] = text
 	f.close()
@@ -281,6 +281,7 @@ Then, replace some character to avoid problems."""
 def generate_JSON_DataBase():
 	database = load_json("data/firstdata.json")# + load_json("data/NYT.json") ##TODO: choisir ici la bdd 
 	save_json(database, "data/database.json")
+
 
 motsVide = load_empty_words("data/motsvides.txt")
 
