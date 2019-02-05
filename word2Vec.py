@@ -1,9 +1,8 @@
 import gensim
 import json_gen as js
 import trt_doc as td
-from nltk.stem import PorterStemmer
-import numpy as np
 
+import numpy as np
 
 
 
@@ -22,14 +21,19 @@ def trainWord2VecDict(vector):
     return model
 """
 
+
 def getPreTrainedModel():
     # Load Google's pre-trained Word2Vec model.
     model = gensim.models.KeyedVectors.load_word2vec_format('./word2vec/GoogleNews-vectors-negative300-SLIM.bin', binary=True)
+    # model.save("word2vec/google_word2vec")
+    # model.wv.save_word2vec_format("word2vec/word2vec_org",
+    #                              "word2vec/vocabulary",
+    #                              binary=False)
+
     return model
 
 
-model= getPreTrainedModel()
-index2word_set = set(model.wv.index2word)
+
 
 def mean_vector(words, model, num_features,index2word_set):
     #function to average all words vectors in a given paragraph
@@ -46,20 +50,20 @@ def mean_vector(words, model, num_features,index2word_set):
     return featureVec
 
 def Word2vec_avg_doc (filename) :
-    dict = {}
+    dict = []
     tmp=[]
     doc_avg_vector=0
     t = td.load_json(filename)
     for i in range(0,len(t)):
         t[i] = "".join(j for j in t[i] if not j.isdigit())
         t[i] = td.cleanup(t[i])
-        doc_avg_vector = mean_vector(t[i].split(), model=getPreTrainedModel(), num_features=300,index2word_set=index2word_set)
-        dict[i] = doc_avg_vector
-    td.save_json(dict, "word2vec/doc_avg.json")
+        doc_avg_vector = mean_vector(t[i].split(), model=model, num_features=300, index2word_set=index2word_set)
+        dict.append(doc_avg_vector)
+    np.save('word2vec/doc_vector.npy', dict)
 
 def Word2vec_avg_query (query) :
 
-    query_avg_vector = mean_vector(query.split(), model=getPreTrainedModel(), num_features=300,index2word_set=index2word_set)
+    query_avg_vector = mean_vector(query.split(), model=model, num_features=300, index2word_set=index2word_set)
     return query_avg_vector
 
 
@@ -68,7 +72,28 @@ def cosine(v1, v2):
 	v2 = np.array(v2)
 	return np.dot(v1, v2) / (np.sqrt(np.sum(v1**2)) * np.sqrt(np.sum(v2**2)))
 
+def similarity (query) :
+    results = {}
+    doc_vector=np.load('word2vec/doc_vector.npy')
+    query_vector=Word2vec_avg_query(query)
+    for i in range(0,len(doc_vector)):
+        results[i]=cosine(doc_vector[i],query_vector)
+    return results
 
-#Word2vec_avg_doc ("data/firstdata.json")
+def show_results(query):
+    a=similarity(query)
+    s = sorted(a.items(), key=lambda t: t[1], reverse=True)
+    return s
 
-print(Word2vec_avg_query (" Why should hello "))
+
+
+
+
+
+model = gensim.models.KeyedVectors.load('word2vec/google_word2vec')
+index2word_set = set(model.wv.index2word)
+
+
+#Word2vec_avg_doc ("data/CISI.ALL.json")
+
+print(show_results(" Why should hello "))
