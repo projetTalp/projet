@@ -1,7 +1,7 @@
 from time import sleep
 import argparse
 import operator
-
+import time
 import getdf
 import json
 
@@ -30,12 +30,16 @@ def main(mode):
         req = json.loads(txt)
         precision = []
         rappel = []
+        temps = []
         for i in range(1, len(req)):
             print ("request n" + str(i) + ":" + str(req[i]))
             if rel.has_key(str(i)):
+                h = time.time()
                 rep_ex = getdf.sortResult(getdf.search(req[i]))
+                h = h - time.time()
                 rep_th = rel[str(i)]
                 rep_ex_doc = []
+                temps.append(h)
                 for j in range(len(rep_th)):
                     rep_ex_doc.append(rep_ex[j][0])
                 # print rep_ex_doc
@@ -59,6 +63,8 @@ def main(mode):
         acc_rap = acc_rap/len(rappel)
         print ("rappel : " + str(acc_rap))
         print ("F-score :" + str(acc_rap*acc_pre*2/(acc_rap+acc_pre)))
+        print temps
+
 
     elif mode == "random":
         # Get dictonary of relations between query and documents
@@ -116,10 +122,14 @@ def main(mode):
         req = json.loads(txt)
         precision = []
         rappel = []
+        temps = []
         for i in range(1, len(req)):
             print ("request n" + str(i) + ":" + str(req[i]))
             if rel.has_key(str(i)):
+                h = time.time()
                 rep_ex = getdf.sortResult(getdf.search_tf(req[i]))
+                h = h - time.time()
+                temps.append(h)
                 rep_th = rel[str(i)]
                 rep_ex_doc = []
                 for j in range(len(rep_th)):
@@ -145,6 +155,7 @@ def main(mode):
         acc_rap = acc_rap/len(rappel)
         print ("rappel : " + str(acc_rap))
         print ("F-score :" + str(acc_rap*acc_pre*2/(acc_rap+acc_pre)))
+        print temps
 
 
 if __name__ == '__main__':
