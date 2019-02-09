@@ -22,6 +22,7 @@ Then, replace some character to avoid problems."""
 	f.close()
 	td.save_json(t, filename + ".json")
 
+
 """
 def loadBaseCSV(filename):
 	Open target file and split it according to the differents lines .I.
@@ -31,6 +32,7 @@ Then, replace some character to avoid problems.
 	f.close()
 	return t
 """
+
 
 def loadBaseNYT(filename):
 	"""Open target file and split it according to the differents lines .I.
@@ -104,11 +106,13 @@ def main(mode, filename):
 	elif mode == "load-BaseProf":
 		loadBaseFileProf(filename[0])
 
+	elif mode == "liste_inverse":
+		return 0
+
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description="Update or creation of differents json file")
 	parser.add_argument('-m', "--mode", required=True, help="Select one of : query/tfidf/relations/database/load-NYT/load-BaseProf")
-	parser.add_argument('-fn', "--filename", nargs='+', required=False, help="if needed, the differents source files")
+	parser.add_argument('-fn', "--filename", nargs='+', required=False, help="if needed, the different source files")
 	args = parser.parse_args()
 	main(args.mode, args.filename)
-
