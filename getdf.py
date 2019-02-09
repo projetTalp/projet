@@ -3,7 +3,7 @@ from nltk.stem import PorterStemmer
 import sys
 import math
 import numpy as np
-
+import random
 import trt_doc as td
 import json_gen
 
@@ -11,10 +11,34 @@ global motsVide
 global descripteurs
 global idf
 
+############################################################################################
+# For Tests :
+# Random tests
+def get_sim_random():
+	"""Give random similarity to documents for a special request, for test only"""
+	dic = {}
+	doc = td.load_json("data/database.json")
+	for i in range(0, len(doc)):
+		a = random.random()
+		dic[i] = a
+	return dic
+
+
+# TF comparison with idf :
+def search_tf(request):
+	req = td.cleanup(request)
+	tmp = getOccurrenciesVector(req, motsVide)
+	vectRequestTF = getTermFrenquency(tmp)
+	descripteurs = td.load_json("data/tf.json")
+	result = findSimilarite(descripteurs, vectRequestTF)
+	return result
+#############################
+
+
 def getTFIdfResquest(req):
 	req = td.cleanup(req)
 	tmp = getOccurrenciesVector(req, motsVide)
-	tf = getTermFrenquency(tmp)
+	tf = getTermFrenquency(tmp)>>>
 	tf_idf = {}
 	for word in tf:
 		if idf.has_key(word):
@@ -146,10 +170,15 @@ def showResult(sortedDicoOfSimi):
 	return html
 
 
+def liste_inversee(filename):
+
+	return 0
+
+
+
 def main():
 	# FOR TESTS
 	mode = sys.argv[1]
-
 	if mode == "-load":
 		generateTF("data/firstdata")
 		generateIDF("data/firstdata")
@@ -168,3 +197,4 @@ def main():
 motsVide = td.load_empty_words("data/motsvides.txt")
 descripteurs = td.load_json("data/tfidf.json")
 idf = td.load_json("data/idf.json")
+
