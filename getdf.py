@@ -29,7 +29,6 @@ def search_tf(request):
 	req = td.cleanup(request)
 	tmp = getOccurrenciesVector(req, motsVide)
 	vectRequestTF = getTermFrenquency(tmp)
-	descripteurs = td.load_json("data/tf.json")
 	result = findSimilarite(descripteurs, vectRequestTF)
 	return result
 #############################
