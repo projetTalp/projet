@@ -36,7 +36,7 @@ def main(mode):
             if rel.has_key(str(i)):
                 h = time.time()
                 rep_ex = getdf.sortResult(getdf.search(req[i]))
-                h = h - time.time()
+                h = time.time() - h
                 rep_th = rel[str(i)]
                 rep_ex_doc = []
                 temps.append(h)
@@ -63,7 +63,11 @@ def main(mode):
         acc_rap = acc_rap/len(rappel)
         print ("rappel : " + str(acc_rap))
         print ("F-score :" + str(acc_rap*acc_pre*2/(acc_rap+acc_pre)))
-        print temps
+        tps_moyen = 0
+        for i in temps:
+            tps_moyen = i + tps_moyen
+        tps_moyen = tps_moyen / len(temps)
+        print ("Temps moyen : " + str(tps_moyen))
 
 
     elif mode == "random":
@@ -128,7 +132,7 @@ def main(mode):
             if rel.has_key(str(i)):
                 h = time.time()
                 rep_ex = getdf.sortResult(getdf.search_tf(req[i]))
-                h = h - time.time()
+                h = time.time() -h
                 temps.append(h)
                 rep_th = rel[str(i)]
                 rep_ex_doc = []
@@ -155,7 +159,11 @@ def main(mode):
         acc_rap = acc_rap/len(rappel)
         print ("rappel : " + str(acc_rap))
         print ("F-score :" + str(acc_rap*acc_pre*2/(acc_rap+acc_pre)))
-        print temps
+        tps_moyen = 0
+        for i in temps:
+            tps_moyen = i + tps_moyen
+        tps_moyen = tps_moyen / len(temps)
+        print ("Temps moyen : " + str(tps_moyen))
 
 
 if __name__ == '__main__':
