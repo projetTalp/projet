@@ -177,12 +177,14 @@ def splitTrainDevTest(fileInput):
 ## Melanger le fichier en cmd dans le terminal :
 	##perl -MList::Util=shuffle -e 'print shuffle(<STDIN>);' < Reseau_de_neurone/data_moteur_recherche.csv > data_shuffle.csv
 
+
 ## splitTrainDevTest("Reseau_de_neurone/data_shuffle.csv")
 
 txt = "0"
 for i in range(1, 13214):
 	txt = txt + "," + str(i)
 print (txt)
+
 
 
 

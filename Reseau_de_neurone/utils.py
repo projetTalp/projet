@@ -92,19 +92,17 @@ def load_csv(file_name, selected_fields=[]):
     print selected_fields
     if len(selected_fields) != 0:
         data = pd.read_csv(file_name,
-                           sep=';',
+                           sep=',',
                            usecols=selected_fields)
     else:
-         data=pd.read_csv(file_name, sep=';')
-    print("ok")                      
-    print (data)
-                          
-    #labels = pd.read_csv(file_name,
-    #                     header=None,
-    #                     nrows=1,
-    #                     sep=';'
-    #                     ).as_matrix()[0]
-    return data.as_matrix(), []##labels ##data.as_matrix()
+         data=pd.read_csv(file_name,
+                          sep=',')
+    labels = pd.read_csv(file_name,
+                         header=None,
+                         nrows=1,
+                         sep=','
+                         ).as_matrix()[0]
+    return data.as_matrix(), labels
  
 
 

@@ -11,7 +11,7 @@ from keras.utils import np_utils
 from keras.models import Sequential, save_model, load_model
 from keras.layers.core import Dense, Dropout, Activation
 from keras.optimizers import SGD, RMSprop
-from keras.layers.advanced_activations import LeakyReLU, PReLU ## , ParametricSoftplus
+from keras.layers.advanced_activations import LeakyReLU, PReLU, ParametricSoftplus
 from keras.callbacks import Callback, EarlyStopping
 import pandas as pd
 import numpy as np
@@ -125,9 +125,6 @@ def train_neural_network(output_file,
     ## model.add(Dense(output_dim=64, activation='elu', input_dim=2))
     ## model.add(Dense(output_dim=1, activation='linear', input_dim=64))
     #Question 6
-    
-    print("ok ?")
-    
     model = Sequential()
     model.add(Dense(output_dim=1000, activation='elu', input_dim=13214))
     model.add(Dense(output_dim=100, activation='elu', input_dim=1000))
