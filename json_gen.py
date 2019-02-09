@@ -60,6 +60,17 @@ def generate_JSON_DataBase(filenames):
 	td.save_json(database, "data/database.json")
 
 
+def liste_inversee():
+	dic = {}
+	doc = td.load_json("data/tf.json")
+	for i in range(0, len(doc)):
+		for j in doc[i]:
+			if not(dic.has_key(j)):
+				dic[j] = []
+			(dic[j]).append(i+1)
+	td.save_json(dic, "data/liste_inverse.json")
+
+
 def main(mode, filename):
 	if mode == "query":  # Generate the json containing different queries
 		f = open("data/CISI.QRY", "r")
@@ -107,7 +118,7 @@ def main(mode, filename):
 		loadBaseFileProf(filename[0])
 
 	elif mode == "liste_inverse":
-		return 0
+		liste_inversee()
 
 
 if __name__ == '__main__':

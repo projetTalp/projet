@@ -165,19 +165,8 @@ def showResult(sortedDicoOfSimi):
 	return html
 
 
-def liste_inversee(filename):
-	dic = {}
-	doc = td.load_json(filename)
-	for i in range(0, len(doc)):
-		for j in doc[i]:
-			if not(dic.has_key(j)):
-				dic[j] = []
-			(dic[j]).append(i+1)
-		print dic
-	return 0
-
-
 motsVide = td.load_empty_words("data/motsvides.txt")
 descripteurs = td.load_json("data/tfidf.json")
 idf = td.load_json("data/idf.json")
+liste_inverse = td.load_json("data/liste_inversee.json")
 
