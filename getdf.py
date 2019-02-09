@@ -1,11 +1,9 @@
 from nltk.stem import PorterStemmer
-import time
-import sys
 import math
 import numpy as np
 import random
 import trt_doc as td
-import json_gen
+
 
 global motsVide
 global descripteurs
@@ -171,9 +169,10 @@ def liste_inversee(filename):
 	dic = {}
 	doc = td.load_json(filename)
 	for i in range(0, len(doc)):
-		print doc[i]
 		for j in doc[i]:
-			dic[j] = i
+			if not(dic.has_key(j)):
+				dic[j] = []
+			(dic[j]).append(i+1)
 		print dic
 	return 0
 
@@ -182,5 +181,3 @@ motsVide = td.load_empty_words("data/motsvides.txt")
 descripteurs = td.load_json("data/tfidf.json")
 idf = td.load_json("data/idf.json")
 
-
-liste_inversee("data/tf.json")

@@ -79,7 +79,7 @@ def main(mode):
                 rep_ex_doc = []
                 dico = getdf.get_sim_random()
                 for j in range(len(rep_th)):
-                    elm =max(dico.iteritems(), key=operator.itemgetter(1))[0]
+                    elm = max(dico.iteritems(), key=operator.itemgetter(1))[0]
                     rep_ex_doc.append(elm)
                     dico.pop(elm, None)
                 # print rep_ex_doc
