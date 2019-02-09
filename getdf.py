@@ -27,7 +27,8 @@ def search_tf(request):
 	req = td.cleanup(request)
 	tmp = getOccurrenciesVector(req, motsVide)
 	vectRequestTF = getTermFrenquency(tmp)
-	result = findSimilarite(descripteurs, vectRequestTF)
+	descripteurtf = td.load_json("data/tf.json")
+	result = findSimilarite(descripteurtf, vectRequestTF)
 	return result
 #############################
 
@@ -129,12 +130,11 @@ def cosine(v1, v2):
 	return np.dot(v1, v2) / (np.sqrt(np.sum(v1**2)) * np.sqrt(np.sum(v2**2)))
 
 
-def findSimilarite(descripteurs, vectRequestIDF):
+def findSimilarite(vectRequestIDF, id_descripteur):
 	result = {}
-	i = 1 
-	for vectDesc in descripteurs:
-		result[i] = similariteCos(vectDesc, vectRequestIDF)
-		i += 1
+	i = 1
+	for vectDesc in id_descripteur:
+		result[vectDesc] = similariteCos(descripteurs[vectDesc-1], vectRequestIDF)
 	return result
 
 
@@ -148,7 +148,12 @@ def normeVect(dic):
 
 def search(request):
 	vectRequestIDF = getTFIdfResquest(request)
-	result = findSimilarite(descripteurs, vectRequestIDF)
+	mots = vectRequestIDF.keys()
+	tab = {}
+	for i in mots:
+		for doc in liste_inverse[i]:
+			tab[doc] = True
+	result = findSimilarite(vectRequestIDF, tab)
 	return result
 
 
@@ -168,5 +173,5 @@ def showResult(sortedDicoOfSimi):
 motsVide = td.load_empty_words("data/motsvides.txt")
 descripteurs = td.load_json("data/tfidf.json")
 idf = td.load_json("data/idf.json")
-liste_inverse = td.load_json("data/liste_inversee.json")
+liste_inverse = td.load_json("data/liste_inverse.json")
 
