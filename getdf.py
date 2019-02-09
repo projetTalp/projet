@@ -1,5 +1,5 @@
 from nltk.stem import PorterStemmer
-
+import time
 import sys
 import math
 import numpy as np
@@ -38,7 +38,7 @@ def search_tf(request):
 def getTFIdfResquest(req):
 	req = td.cleanup(req)
 	tmp = getOccurrenciesVector(req, motsVide)
-	tf = getTermFrenquency(tmp)>>>
+	tf = getTermFrenquency(tmp)
 	tf_idf = {}
 	for word in tf:
 		if idf.has_key(word):
@@ -121,8 +121,7 @@ def getTfIdfVector():
 	for doc in tf:
 		vectDoc = {}
 		for word in doc:
-			vectDoc[word] = doc[word] * idf[word]: 
-		idf_tab[word] = math.log(nb_doc/occ[word])
+			vectDoc[word] = doc[word] * idf[word]
 		tab.append(vectDoc)
 	td.save_json(tab, "data/tfidf.json")
 
@@ -159,8 +158,7 @@ def search(request):
 def sortResult(dicoOfSimilarite):
 	s = sorted(dicoOfSimilarite.items(), key=lambda t: t[1], reverse=True)
 	return s
-: 
-		idf_tab[word] = math.log(nb_doc/occ[word])
+
 
 def showResult(sortedDicoOfSimi):
 	html = "<div class='result'><h3>Listes des resultats</h3>"
@@ -171,26 +169,13 @@ def showResult(sortedDicoOfSimi):
 
 
 def liste_inversee(filename):
-
-	return 0
-
-
-
-def main():
-	# FOR TESTS
-	mode = sys.argv[1]
-	if mode == "-load":
-		generateTF("data/firstdata")
-		generateIDF("data/firstdata")
-		getTfIdfVector()
-
-	elif mode == "-search":
-		request = sys.argv[2]
-		result = search(request)
-		return result
-	elif mode == "-selectDatabase":
-		json_gen.generate_JSON_DataBase()
-		print("ok ?")
+	dic = {}
+	doc = td.load_json(filename)
+	for i in range(0, len(doc)):
+		print doc[i]
+		for j in doc[i]:
+			dic[j] = i
+		print dic
 	return 0
 
 
@@ -198,3 +183,5 @@ motsVide = td.load_empty_words("data/motsvides.txt")
 descripteurs = td.load_json("data/tfidf.json")
 idf = td.load_json("data/idf.json")
 
+
+liste_inversee("data/tf.json")
