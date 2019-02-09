@@ -8,13 +8,13 @@ import trt_doc as td
 import json_gen
 
 global motsVide
-
+global descripteurs
+global idf
 
 def getTFIdfResquest(req):
 	req = td.cleanup(req)
 	tmp = getOccurrenciesVector(req, motsVide)
 	tf = getTermFrenquency(tmp)
-	idf = td.load_json("data/idf.json")
 	tf_idf = {}
 	for word in tf:
 		if idf.has_key(word):
@@ -97,7 +97,8 @@ def getTfIdfVector():
 	for doc in tf:
 		vectDoc = {}
 		for word in doc:
-			vectDoc[word] = doc[word] * idf[word]
+			vectDoc[word] = doc[word] * idf[word]: 
+		idf_tab[word] = math.log(nb_doc/occ[word])
 		tab.append(vectDoc)
 	td.save_json(tab, "data/tfidf.json")
 
@@ -127,7 +128,6 @@ def normeVect(dic):
 
 def search(request):
 	vectRequestIDF = getTFIdfResquest(request)
-	descripteurs = td.load_json("data/tfidf.json")
 	result = findSimilarite(descripteurs, vectRequestIDF)
 	return result
 
@@ -135,7 +135,8 @@ def search(request):
 def sortResult(dicoOfSimilarite):
 	s = sorted(dicoOfSimilarite.items(), key=lambda t: t[1], reverse=True)
 	return s
-
+: 
+		idf_tab[word] = math.log(nb_doc/occ[word])
 
 def showResult(sortedDicoOfSimi):
 	html = "<div class='result'><h3>Listes des resultats</h3>"
@@ -165,3 +166,5 @@ def main():
 
 
 motsVide = td.load_empty_words("data/motsvides.txt")
+descripteurs = td.load_json("data/tfidf.json")
+idf = td.load_json("data/idf.json")
