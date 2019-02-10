@@ -3,7 +3,7 @@ from bottle import post, request
 import time
 import getdf
 import trt_doc as td
-#import word2Vec as wv
+import word2Vec as wv
 import getdf_neural_network as gnn
 
 @route('/indexTFIDF')

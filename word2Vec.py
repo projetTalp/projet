@@ -56,7 +56,7 @@ def similarity(query):
     results = {}
     doc_vector = np.load('word2vec/doc_vector.npy')
     query_vector = Word2vec_avg_query(query)
-    for i in range(0, len(doc_vector)):
+    for i in range(1, len(doc_vector)):
         results[i] = cosine(doc_vector[i], query_vector)
     return results
 
@@ -78,7 +78,3 @@ def showResult(sortedDicoOfSimi):
 model = gensim.models.KeyedVectors.load('word2vec/google_word2vec')
 index2word_set = set(model.wv.index2word)
 
-
-# Word2vec_avg_doc ("data/CISI.ALL.json")
-
-# print(show_results(" Why should hello "))
