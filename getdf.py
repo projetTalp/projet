@@ -1,20 +1,42 @@
 from nltk.stem import PorterStemmer
-
-import sys
 import math
 import numpy as np
-
+import random
 import trt_doc as td
-import json_gen
+
 
 global motsVide
+global descripteurs
+global idf
+
+############################################################################################
+# For Tests :
+# Random tests
+def get_sim_random():
+	"""Give random similarity to documents for a special request, for test only"""
+	dic = {}
+	doc = td.load_json("data/database.json")
+	for i in range(0, len(doc)):
+		a = random.random()
+		dic[i] = a
+	return dic
+
+
+# TF comparison with idf :
+def search_tf(request):
+	req = td.cleanup(request)
+	tmp = getOccurrenciesVector(req, motsVide)
+	vectRequestTF = getTermFrenquency(tmp)
+	descripteurtf = td.load_json("data/tf.json")
+	result = findSimilarite(descripteurtf, vectRequestTF)
+	return result
+#############################
 
 
 def getTFIdfResquest(req):
 	req = td.cleanup(req)
 	tmp = getOccurrenciesVector(req, motsVide)
 	tf = getTermFrenquency(tmp)
-	idf = td.load_json("data/idf.json")
 	tf_idf = {}
 	for word in tf:
 		if idf.has_key(word):
@@ -108,12 +130,11 @@ def cosine(v1, v2):
 	return np.dot(v1, v2) / (np.sqrt(np.sum(v1**2)) * np.sqrt(np.sum(v2**2)))
 
 
-def findSimilarite(descripteurs, vectRequestIDF):
+def findSimilarite(vectRequestIDF, id_descripteur):
 	result = {}
-	i = 1 
-	for vectDesc in descripteurs:
-		result[i] = similariteCos(vectDesc, vectRequestIDF)
-		i += 1
+	i = 1
+	for vectDesc in id_descripteur:
+		result[vectDesc] = similariteCos(descripteurs[vectDesc-1], vectRequestIDF)
 	return result
 
 
@@ -127,8 +148,12 @@ def normeVect(dic):
 
 def search(request):
 	vectRequestIDF = getTFIdfResquest(request)
-	descripteurs = td.load_json("data/tfidf.json")
-	result = findSimilarite(descripteurs, vectRequestIDF)
+	mots = vectRequestIDF.keys()
+	tab = {}
+	for i in mots:
+		for doc in liste_inverse[i]:
+			tab[doc] = True
+	result = findSimilarite(vectRequestIDF, tab)
 	return result
 
 
@@ -145,23 +170,8 @@ def showResult(sortedDicoOfSimi):
 	return html
 
 
-def main():
-	# FOR TESTS
-	mode = sys.argv[1]
-
-	if mode == "-load":
-		generateTF("data/firstdata")
-		generateIDF("data/firstdata")
-		getTfIdfVector()
-
-	elif mode == "-search":
-		request = sys.argv[2]
-		result = search(request)
-		return result
-	elif mode == "-selectDatabase":
-		json_gen.generate_JSON_DataBase()
-		print("ok ?")
-	return 0
-
-
 motsVide = td.load_empty_words("data/motsvides.txt")
+descripteurs = td.load_json("data/tfidf.json")
+idf = td.load_json("data/idf.json")
+liste_inverse = td.load_json("data/liste_inverse.json")
+

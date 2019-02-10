@@ -80,10 +80,17 @@ def similarity (query) :
         results[i]=cosine(doc_vector[i],query_vector)
     return results
 
-def show_results(query):
+def get_results(query):
     a=similarity(query)
     s = sorted(a.items(), key=lambda t: t[1], reverse=True)
     return s
+
+def showResult(sortedDicoOfSimi):
+	html = "<div class='result'><h3>Listes des resultats</h3>"
+	for doc in sortedDicoOfSimi:
+		html += "<div class='item'><a href='./doc/" + str(doc[0]) + "' >Document numero"+str(doc[0])+"</a><p>Similarite : "+str(doc[1])+"</p></div>"
+	html += "</div>"
+return html
 
 
 
@@ -96,4 +103,4 @@ index2word_set = set(model.wv.index2word)
 
 #Word2vec_avg_doc ("data/CISI.ALL.json")
 
-print(show_results(" Why should hello "))
+#print(show_results(" Why should hello "))
