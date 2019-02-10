@@ -1,5 +1,6 @@
 from keras.models import load_model
 import trt_doc as td
+import getdf as gt
 
 # coding=<utf-8>
 
@@ -24,7 +25,7 @@ def search(request):
 	mots = vectRequestIDF.keys()
 	tab = {}
 	for i in mots:
-		for doc in liste_inverse[i]:
+		for doc in gt.liste_inverse[i]:
 			tab[doc] = True
 	result = findSimilarite(vectRequestIDF, tab)
 	return result
@@ -32,12 +33,12 @@ def search(request):
 
 def getTFIdfResquest(req):
 	req = td.cleanup(req)
-	tmp = getOccurrenciesVector(req, motsVide)
-	tf = getTermFrenquency(tmp)
+	tmp = gt.getOccurrenciesVector(req, gt.motsVide)
+	tf = gt.getTermFrenquency(tmp)
 	tf_idf = {}
 	for word in tf:
-		if idf.has_key(word):
-			tf_idf[word] = tf[word] * idf[word]
+		if gt.idf.has_key(word):
+			tf_idf[word] = tf[word] * gt.idf[word]
 	return tf_idf
 	
 
@@ -47,8 +48,10 @@ def findSimilarite(vectRequestIDF, id_descripteur):
 	result = {}
 	tab_req = dicoToTab(vectRequestIDF)
 	for vectDesc in id_descripteur:
-		tab_desc = dicoToTab(descripteurs[vectDesc-1])
-		result[vectDesc] = model.predict(tab_desc + tab_req)
+		tab_desc = dicoToTab(gt.descripteurs[vectDesc-1])
+		big_tab = tab_desc + tab_req
+		print(len(big_tab))
+		result[vectDesc] = model.predict(big_tab)
 		print (result[vectDesc])
 	return result
 
