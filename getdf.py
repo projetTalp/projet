@@ -83,46 +83,6 @@ def getOccurrenciesVector(doc, motsVides):
 	return dico
 
 
-def generateTF(filename):
-	doc = td.loadDoc(filename)
-	biblio = []
-	for i in range (1, len(doc)):
-		vect = getOccurrenciesVector(doc[i], motsVide)
-		vect = getTermFrenquency(vect)
-		biblio.append(vect)
-	td.save_json(biblio, "data/tf.json")
-
-
-def generateIDF(filename):
-	tf_doc = td.load_json("data/tf.json")
-	nb_doc = len(tf_doc) + 1
-	occ = {}
-	for doc in tf_doc:
-		for word in doc:
-			if occ.has_key(word):
-				occ[word] += 1
-			else:
-				occ[word] = 1
-	idf_tab = {}
-	for word in occ: 
-		idf_tab[word] = math.log(nb_doc/occ[word])
-	
-	td.save_json(idf_tab, "data/idf.json")
-
-
-def getTfIdfVector():
-	"""Get the dictionnary which contains articles, then delete 'useless' words listed in the list motsVides
-	to count how much times a word is present on a document"""
-	tf = td.load_json("data/tf.json")
-	idf = td.load_json("data/idf.json")
-	tab = []
-	for doc in tf:
-		vectDoc = {}
-		for word in doc:
-			vectDoc[word] = doc[word] * idf[word]
-		tab.append(vectDoc)
-	td.save_json(tab, "data/tfidf.json")
-
 
 def cosine(v1, v2):
 	v1 = np.array(v1)

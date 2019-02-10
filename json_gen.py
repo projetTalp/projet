@@ -2,7 +2,6 @@ import argparse
 import json
 import trt_doc as td
 
-import getdf
 
 
 def loadBaseFileProf(filename):
@@ -71,6 +70,44 @@ def liste_inversee():
 	td.save_json(dic, "data/liste_inverse.json")
 
 
+def generateTF(filename):
+	doc = td.loadDoc(filename)
+	biblio = []
+	for i in range (1, len(doc)):
+		vect = getOccurrenciesVector(doc[i], motsVide)
+		vect = getTermFrenquency(vect)
+		biblio.append(vect)
+	td.save_json(biblio, "data/tf.json")
+	
+def generateIDF(filename):
+	tf_doc = td.load_json("data/tf.json")
+	nb_doc = len(tf_doc) + 1
+	occ = {}
+	for doc in tf_doc:
+		for word in doc:
+			if occ.has_key(word):
+				occ[word] += 1
+			else:
+				occ[word] = 1
+	idf_tab = {}
+	for word in occ: 
+		idf_tab[word] = math.log(nb_doc/occ[word])
+	
+	td.save_json(idf_tab, "data/idf.json")
+	
+def getTfIdfVector():
+	"""Get the dictionnary which contains articles, then delete 'useless' words listed in the list motsVides
+	to count how much times a word is present on a document"""
+	tf = td.load_json("data/tf.json")
+	idf = td.load_json("data/idf.json")
+	tab = []
+	for doc in tf:
+		vectDoc = {}
+		for word in doc:
+			vectDoc[word] = doc[word] * idf[word]
+		tab.append(vectDoc)
+	td.save_json(tab, "data/tfidf.json")
+
 def main(mode, filename):
 	if mode == "query":  # Generate the json containing different queries
 		f = open("data/CISI.QRY", "r")
@@ -89,11 +126,11 @@ def main(mode, filename):
 
 	elif mode == "tfidf":
 		print("TF Generation")
-		getdf.generateTF("data/database.json")
+		generateTF("data/database.json")
 		print("IDF Generation")
-		getdf.generateIDF("data/database.json")
+		generateIDF("data/database.json")
 		print("TFIDF Generation")
-		getdf.getTfIdfVector()
+		getTfIdfVector()
 
 	elif mode == "relations":  # For test
 		rel = {}  # Creation of the relation dictionnary
@@ -123,7 +160,7 @@ def main(mode, filename):
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description="Update or creation of differents json file")
-	parser.add_argument('-m', "--mode", required=True, help="Select one of : query/tfidf/relations/database/load-NYT/load-BaseProf")
+	parser.add_argument('-m', "--mode", required=True, help="Select one of : query/tfidf/relations/database/load-NYT/load-BaseProf/liste_inverse")
 	parser.add_argument('-fn', "--filename", nargs='+', required=False, help="if needed, the different source files")
 	args = parser.parse_args()
 	main(args.mode, args.filename)
