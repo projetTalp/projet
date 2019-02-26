@@ -65,3 +65,4 @@ def dicoToTab(dico):
 			tab.append(0)
 	return tab
 
+

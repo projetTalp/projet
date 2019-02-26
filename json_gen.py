@@ -158,3 +158,4 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 	main(args.mode, args.filename)
 	motsVide = td.load_empty_words("data/motsvides.txt")
+

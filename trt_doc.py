@@ -83,3 +83,4 @@ def load_empty_words(empty_word_list):
 
 
 motsVide=load_empty_words("data/motsvides.txt")
+

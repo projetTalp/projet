@@ -141,3 +141,4 @@ descripteurs = td.load_json("data/tfidf.json")
 idf = td.load_json("data/idf.json")
 liste_inverse = td.load_json("data/liste_inverse.json")
 
+

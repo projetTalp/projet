@@ -82,3 +82,4 @@ model = gensim.models.KeyedVectors.load('word2vec/google_word2vec')
 # Indexing its vocabulary's words
 index2word_set = set(model.wv.index2word)
 
+
