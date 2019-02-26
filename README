@@ -1,3 +1,12 @@
+ ## Livrable
+ 	getdf.py : sert pour calculer les descripteurs de type TF, TF-IDF
+ 	json_gen.py : sert pour la génération des fichiers JSON
+ 	word2vec.py : sert pour calculer les discripteurs avec embedding
+ 	eval_test.py : sert à tester les résultats des différents méthodes en les comparants avec le fichier de relation initiale
+	trt_doc.py : sert à faire des traitement sur les fichiers (txt, json)
+	serveur.py : serveur pour pouvoir utiliser le moteur de recherche
+
+
 ## Partie Génération (json_gen.py)
 
 	python json_gen.py -h => affiche l'aide
