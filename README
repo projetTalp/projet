@@ -20,6 +20,11 @@ Pour utiliser le script des tests :
 ## Partie recherche d'un doc via une requete
 
 	lancer le serveur avec : python serveur.py
-	puis accéder à : localhost:8080/index
-	
+	puis accéder à : localhost:8080/indexTFIDF pour les descripteurs en mode tfidf
+	                 localhost:8080/indexW2V
 
+
+## Partie test
+	lancer python eval_test.py -m [type du test, entre tfidf, random, tf, embedding, comparison (compare les résultat tfidf et embedding]
+
+## Changer de base de données : mettre remplacer les fichiers dans ./data par ceux présent dans ./data/[Type de base] (uniquement remplacer des fichiers, pas de suppression)
