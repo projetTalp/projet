@@ -22,8 +22,8 @@ def get_sim_random():
 	return dic
 
 
-# TF comparison with idf :
 def search_tf(request):
+	"""" TF comparison with idf :"""
 	req = td.cleanup(request)
 	tmp = getOccurrenciesVector(req, motsVide)
 	vectRequestTF = getTermFrenquency(tmp)
@@ -34,6 +34,7 @@ def search_tf(request):
 
 
 def getTFIdfResquest(req):
+	"""Return the tf idf of a request"""
 	req = td.cleanup(req)
 	tmp = getOccurrenciesVector(req, motsVide)
 	tf = getTermFrenquency(tmp)
@@ -45,6 +46,7 @@ def getTFIdfResquest(req):
 
 
 def getTermFrenquency(frequencyVector):
+	"""Return the term of a vector"""
 	s = 0
 	for i in frequencyVector:  # Recuperation du nombre de mots dans le doc
 		s = s + frequencyVector[i]
@@ -55,6 +57,7 @@ def getTermFrenquency(frequencyVector):
 
 
 def similariteCos(vectDesc, vectReq):
+	"""Calculate the cosinus simmilairy of a request and a descriptor"""
 	prodScal = 0
 	for word in vectReq:
 		if vectDesc.has_key(word):
@@ -83,14 +86,15 @@ def getOccurrenciesVector(doc, motsVides):
 	return dico
 
 
-
 def cosine(v1, v2):
+	""" Intermediate calcul for cosinus similarity"""
 	v1 = np.array(v1)
 	v2 = np.array(v2)
 	return np.dot(v1, v2) / (np.sqrt(np.sum(v1**2)) * np.sqrt(np.sum(v2**2)))
 
 
 def findSimilarite(vectRequestIDF, id_descripteur):
+	""" Get the similarity of an idf request and a descriptor using cosinus similarity method"""
 	result = {}
 	i = 1
 	for vectDesc in id_descripteur:
@@ -107,6 +111,7 @@ def normeVect(dic):
 
 
 def search(request):
+	"""Used by application to research best document of a request"""
 	vectRequestIDF = getTFIdfResquest(request)
 	mots = vectRequestIDF.keys()
 	tab = {}
@@ -118,6 +123,7 @@ def search(request):
 
 
 def sortResult(dicoOfSimilarite):
+	"""Used to sort result given by search to show the most similar at first"""
 	s = sorted(dicoOfSimilarite.items(), key=lambda t: t[1], reverse=True)
 	return s
 

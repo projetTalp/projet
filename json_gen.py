@@ -1,7 +1,8 @@
 import argparse
 import json
 import trt_doc as td
-
+import math
+import getdf.py as gdf
 
 
 def loadBaseFileProf(filename):
@@ -20,17 +21,6 @@ Then, replace some character to avoid problems."""
 			c = c+1
 	f.close()
 	td.save_json(t, filename + ".json")
-
-
-"""
-def loadBaseCSV(filename):
-	Open target file and split it according to the differents lines .I.
-Then, replace some character to avoid problems.
-	f = open(filename, "r")
-	t = f.read().split("\n")
-	f.close()
-	return t
-"""
 
 
 def loadBaseNYT(filename):
@@ -73,12 +63,13 @@ def liste_inversee():
 def generateTF(filename):
 	doc = td.loadDoc(filename)
 	biblio = []
-	for i in range (1, len(doc)):
-		vect = getOccurrenciesVector(doc[i], motsVide)
-		vect = getTermFrenquency(vect)
+	for i in range(1, len(doc)):
+		vect = gdf.getOccurrenciesVector(doc[i], motsVide)
+		vect = gdf.getTermFrenquency(vect)
 		biblio.append(vect)
 	td.save_json(biblio, "data/tf.json")
-	
+
+
 def generateIDF(filename):
 	tf_doc = td.load_json("data/tf.json")
 	nb_doc = len(tf_doc) + 1
@@ -94,7 +85,8 @@ def generateIDF(filename):
 		idf_tab[word] = math.log(nb_doc/occ[word])
 	
 	td.save_json(idf_tab, "data/idf.json")
-	
+
+
 def getTfIdfVector():
 	"""Get the dictionnary which contains articles, then delete 'useless' words listed in the list motsVides
 	to count how much times a word is present on a document"""
@@ -107,6 +99,7 @@ def getTfIdfVector():
 			vectDoc[word] = doc[word] * idf[word]
 		tab.append(vectDoc)
 	td.save_json(tab, "data/tfidf.json")
+
 
 def main(mode, filename):
 	if mode == "query":  # Generate the json containing different queries
@@ -164,3 +157,4 @@ if __name__ == '__main__':
 	parser.add_argument('-fn', "--filename", nargs='+', required=False, help="if needed, the different source files")
 	args = parser.parse_args()
 	main(args.mode, args.filename)
+	motsVide = td.load_empty_words("data/motsvides.txt")

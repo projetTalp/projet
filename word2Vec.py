@@ -3,6 +3,7 @@ import trt_doc as td
 
 import numpy as np
 
+
 # function that load our google pre-trained model, we had only used it once to load our model
 def getPreTrainedModel():
     # Load Google's pre-trained Word2Vec model.
@@ -11,8 +12,8 @@ def getPreTrainedModel():
     # model.wv.save_word2vec_format("word2vec/word2vec_org",
     #                              "word2vec/vocabulary",
     #                              binary=False)
-
     return model
+
 
 # function that calculates the average vector for a string
 # calculates an average vector as the addition of all string's vectors divided by the number of vectors in that string
